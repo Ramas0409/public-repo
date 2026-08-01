@@ -178,3 +178,10 @@ WHERE c.c_case_ntwk = 'VISA'
 GROUP BY 1
 ORDER BY cnt DESC
 LIMIT 40;
+
+
+
+SELECT a.c_reason, c.c_case_wrkflw_type, COUNT(*)                                                                                                                                 
+  FROM wdp.action a JOIN wdp."case" c ON c.i_case_id = a.i_case_id                                                                                                                  
+  WHERE c.c_case_ntwk = 'VISA' AND a.c_reason IN ('10.4','13.6','11.3','12.5')                                                                                                      
+  GROUP BY 1, 2 ORDER BY 1, 3 DESC;  
