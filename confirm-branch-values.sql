@@ -184,4 +184,10 @@ LIMIT 40;
 SELECT a.c_reason, c.c_case_wrkflw_type, COUNT(*)                                                                                                                                 
   FROM wdp.action a JOIN wdp."case" c ON c.i_case_id = a.i_case_id                                                                                                                  
   WHERE c.c_case_ntwk = 'VISA' AND a.c_reason IN ('10.4','13.6','11.3','12.5')                                                                                                      
-  GROUP BY 1, 2 ORDER BY 1, 3 DESC;  
+  GROUP BY 1, 2 ORDER BY 1, 3 DESC;
+
+
+SELECT a.c_reason, c.c_case_wrkflw_type, a.c_case_stage, a.c_action_type, COUNT(*) AS cases                                                                                       
+    FROM wdp.action a JOIN wdp."case" c ON c.i_case_id = a.i_case_id                                                                                                                
+   WHERE c.c_case_ntwk = 'MASTERCARD' AND a.d_action_processed >= DATE '2026-01-01'                                                                                                 
+   GROUP BY 1,2,3,4 ORDER BY cases DESC; 
