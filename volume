@@ -1,0 +1,177 @@
+-- =============================================================================
+-- Visa reason-code volumes, last 12 months, US platforms.
+-- Case count + disputed value, gross and auto-contest-eligible.
+--
+-- WHERE THE REASON CODE LIVES  (checked before writing this file)
+--   wdp.action.c_reason        -- the dotted Visa condition, stored verbatim: '10.4', '13.1', ...
+--   wdp.action.c_reason_category
+--   wdp."case" carries NO network reason code. Its only *_rsn columns are
+--   c_frd_indemnity_rsn (fraud indemnity) and c_assignment_rsn (work assignment) - neither is
+--   the Visa condition. So the grain is the action row, and the case count has to be a
+--   de-duplicated COUNT over i_case_id rather than a COUNT(*).
+--
+-- GRAIN
+--   One CH1 first-chargeback action per case (see cb CTE). A case can carry more than one CH1
+--   FCHG row (partials, re-presented chargebacks); taking the earliest keeps the case count and
+--   the disputed value on the same denominator and stops one case being counted under two
+--   reason codes. Swap the ORDER BY in `cb` if you want the latest instead.
+--
+-- BEFORE YOU TRUST THE NUMBERS - run Q0 and set the platform list in the `us_platforms` CTE.
+-- =============================================================================
+
+
+-- =============================================================================
+-- Q0. CONFIRM THE US PLATFORM VALUES.  Run this first; nothing else is guessable here.
+--     c_acq_platform is a free varchar and its real domain is not recorded anywhere in the
+--     codebase, so the main query below ships with a placeholder list rather than an invented one.
+-- =============================================================================
+SELECT c.c_acq_platform,
+       COUNT(*)                          AS cases,
+       MIN(c.d_case_strt)                AS first_case,
+       MAX(c.d_case_strt)                AS last_case,
+       COUNT(DISTINCT c.c_cntry)         AS distinct_merchant_countries,
+       (ARRAY_AGG(DISTINCT c.c_cntry))[1:10] AS sample_countries
+FROM wdp."case" c
+WHERE c.c_case_ntwk = 'VISA'
+  AND c.d_case_strt >= CURRENT_DATE - INTERVAL '12 months'
+GROUP BY 1
+ORDER BY cases DESC;
+
+
+-- =============================================================================
+-- Q1. MAIN REPORT - one row per Visa reason code.
+-- =============================================================================
+WITH
+-- -----------------------------------------------------------------------------------------
+-- >>> EDIT ME once Q0 comes back. Until then this CTE lets every platform through, so the
+-- >>> report is US + non-US and the "US platforms only" instruction is NOT yet honoured.
+-- -----------------------------------------------------------------------------------------
+us_platforms AS (
+    SELECT unnest(ARRAY[]::text[]) AS c_acq_platform   -- e.g. ARRAY['NAP','CORE']
+),
+
+-- The 12-month window, on the reported date of the chargeback action.
+-- Whole calendar months ending with the last complete one; drop the upper bound for a rolling
+-- 12 months that includes the part-month to date.
+bounds AS (
+    SELECT (date_trunc('month', CURRENT_DATE) - INTERVAL '12 months')::date AS from_date,
+           date_trunc('month', CURRENT_DATE)::date                          AS to_date
+),
+
+-- One CH1 first-chargeback action per case.
+--   c_case_stage = 'CH1'  - first chargeback stage (StageCode enum, gcp-disputes-contest-service)
+--   c_action_type = 'FCHG' - the inbound dispute. CHGM is deliberately excluded: it is an
+--   outbound money-movement signal to the acquiring platform, not a dispute. Confirmed with the
+--   platform owner 2026-08; adding it would roughly double the count.
+cb AS (
+    SELECT DISTINCT ON (a.i_case_id)
+           a.i_case_id,
+           a.i_action_id,
+           a.c_reason,
+           a.c_reason_category,
+           a.d_action_reported,
+           a.a_dispute_amt,
+           a.c_dispute_currency,
+           a.c_action_sta,
+           a.c_action_in_out,
+           a.c_migration_sta,
+           a.d_response_due
+    FROM wdp.action a
+    JOIN wdp."case" c ON c.i_case_id = a.i_case_id
+    CROSS JOIN bounds b
+    WHERE c.c_case_ntwk = 'VISA'
+      AND a.d_action_reported >= b.from_date
+      AND a.d_action_reported <  b.to_date
+      AND a.c_case_stage  = 'CH1'
+      AND a.c_action_type = 'FCHG'
+      AND (NOT EXISTS (SELECT 1 FROM us_platforms)          -- no list set -> no platform filter
+           OR c.c_acq_platform IN (SELECT c_acq_platform FROM us_platforms))
+    ORDER BY a.i_case_id, a.d_action_reported, a.i_action_id
+),
+
+-- Auto-contest scope, taken from the orchestrator's eligibility gate
+-- (services/auto-contest-orchestrator/src/main/resources/application.yml, autocontest.eligibility).
+-- These are the conditions the rules engine has representment logic for. 12.1 is absent on
+-- purpose: Visa retired it on 12 Apr 2024 and folded late presentment into 11.3.
+target_codes AS (
+    SELECT unnest(ARRAY[
+        '10.4','11.1','11.2','11.3',
+        '12.2','12.3','12.4','12.5','12.6.1','12.6.2','12.7',
+        '13.1','13.2','13.3','13.4','13.5','13.6','13.7'
+    ]) AS c_reason
+),
+
+scored AS (
+    SELECT cb.*,
+           (cb.c_reason IN (SELECT c_reason FROM target_codes))            AS in_scope,
+           -- The runtime gates the gate also applies. Kept separate from in_scope because they
+           -- describe the row's state today, not whether the condition is contestable:
+           -- P3 rejects only an explicit 'O' (c_action_in_out is null/blank on most CH1 FCHGs),
+           -- P5 enforces migration status 'Y', and the deadline must not have passed.
+           (cb.c_action_sta = 'OPEN'
+            AND COALESCE(NULLIF(cb.c_action_in_out, ''), 'I') <> 'O'
+            AND cb.c_migration_sta = 'Y'
+            AND cb.d_response_due >= CURRENT_DATE)                        AS workable_now
+    FROM cb
+)
+
+SELECT s.c_reason                                                          AS reason_code,
+       -- gross: every Visa CH1 first chargeback in the window
+       COUNT(*)                                                            AS cases_gross,
+       ROUND(SUM(s.a_dispute_amt), 2)                                      AS value_gross,
+       -- eligible: reason code the auto-contest engine has logic for
+       COUNT(*) FILTER (WHERE s.in_scope)                                  AS cases_eligible,
+       ROUND(SUM(s.a_dispute_amt) FILTER (WHERE s.in_scope), 2)            AS value_eligible,
+       ROUND(100.0 * COUNT(*) FILTER (WHERE s.in_scope) / COUNT(*), 1)     AS pct_cases_eligible,
+       -- eligible AND still actionable today (open, migrated, inbound, deadline alive).
+       -- On a 12-month backward look most of the book is already closed, so this column is
+       -- near-zero by construction - it is here to size the live queue, not the opportunity.
+       COUNT(*) FILTER (WHERE s.in_scope AND s.workable_now)               AS cases_eligible_workable_now,
+       ROUND(SUM(s.a_dispute_amt) FILTER (WHERE s.in_scope AND s.workable_now), 2)
+                                                                           AS value_eligible_workable_now,
+       -- currency guard: a_dispute_amt is summed as stored, so a non-USD row would silently
+       -- distort the totals. Expect distinct_currencies = 1 on a US book.
+       COUNT(DISTINCT s.c_dispute_currency)                                AS distinct_currencies,
+       COUNT(*) FILTER (WHERE s.c_dispute_currency <> 'USD')               AS non_usd_rows,
+       MIN(s.d_action_reported)                                            AS first_reported,
+       MAX(s.d_action_reported)                                            AS last_reported
+FROM scored s
+GROUP BY s.c_reason
+ORDER BY cases_gross DESC;
+
+
+-- =============================================================================
+-- Q2. Same window, one summary row - the totals to quote alongside Q1.
+-- =============================================================================
+-- Re-run Q1's CTE chain and aggregate without the GROUP BY if you need this; kept as a
+-- separate statement rather than a ROLLUP so Q1 stays a clean per-code grid.
+--   ... FROM scored s;   -- with GROUP BY removed and c_reason dropped from the select list.
+
+
+-- =============================================================================
+-- NOTES / THINGS TO CHECK BEFORE PUBLISHING THE NUMBERS
+--
+-- 1. PLATFORM FILTER IS OFF until you fill `us_platforms` from Q0. As written this is all-Visa.
+--
+-- 2. Amount scale. wdp.action carries both a_dispute_amt and i_dispute_currency_exponent.
+--    This query sums a_dispute_amt as stored (numeric(20,4)). If the exponent is ever non-2 the
+--    values need scaling - confirm with:
+--      SELECT i_dispute_currency_exponent, COUNT(*) FROM wdp.action
+--      WHERE c_case_stage='CH1' AND c_action_type='FCHG' GROUP BY 1;
+--    a_cnverted_dispute_amt / a_dispute_workable_amt are the alternatives if you want the
+--    converted or workable figure instead of the as-reported one.
+--
+-- 3. Multi-currency. Only sum across currencies once distinct_currencies = 1, or add
+--    c_dispute_currency to the GROUP BY.
+--
+-- 4. Date column. d_action_reported is when the network reported the chargeback. Use
+--    d_action_processed if the report is meant to track when WDP handled it, and note that
+--    z_insrt is not reliably UTC (see D-ACTION-PROCESSED-EST-FEASIBILITY.md).
+--
+-- 5. Cost. Both queries scan wdp.action; ix_action_reported_date / ix_action_brin_reported_date
+--    cover the d_action_reported predicate, which is why the window is applied there.
+--
+-- 6. Out-of-scope codes (10.1, 10.2, 10.3, 13.8, 13.9) and accept-recommend (10.5) fall out of
+--    cases_eligible automatically by not being in target_codes; they still appear in the gross
+--    rows, which is the point of the gross/eligible split.
+-- =============================================================================
