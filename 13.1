@@ -1,0 +1,994 @@
+{
+ "tree": {
+  "id": 43,
+  "network": "VISA",
+  "reasonCode": "13.1",
+  "edition": "18 April 2026",
+  "version": "6",
+  "status": "APPROVED",
+  "assemblerVersion": "1.0",
+  "builtFromDigest": "sha256:1c2ac0abd8597c826d6edd840bc562963a46aae50dba0fa74d31088f13fda50f",
+  "signedBy": "system",
+  "signedAt": "2026-08-23 10:25:46.105558"
+ },
+ "nodes": [
+  {
+   "nodeId": "G11",
+   "ordinal": 1,
+   "requirementCode": "VISA-13.1-G11",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "An ATM Cash Disbursement",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "transaction.isAtmCashDisbursement"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "transaction.isAtmCashDisbursement",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G12",
+   "ordinal": 2,
+   "requirementCode": "VISA-13.1-G12",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "A Straight Through Processing Transaction",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "transaction.isStraightThroughProcessing",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G13",
+   "ordinal": 3,
+   "requirementCode": "VISA-13.1-G13",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "A Transaction in which the Cardholder cancelled the merchandise or service\n  before the expected delivery or service date (for example: the Cardholder\n  purchased merchandise and subsequently cancelled with the Merchant due to\n  buyer’s remorse)",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "documents.cancellationRecordAvailable"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "cancellation.beforeExpectedDelivery"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "cancellation.beforeExpectedDelivery",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "documents.cancellationRecordAvailable",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G14",
+   "ordinal": 4,
+   "requirementCode": "VISA-13.1-G14",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "A Transaction in which merchandise is being held by the Cardholder’s\n  country’s customs agency",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "EQUALS",
+    "value": "CARDHOLDER_COUNTRY",
+    "factKeys": [
+     "delivery.customsHoldingCountryRole"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "delivery.customsHoldingCountryRole",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G15",
+   "ordinal": 5,
+   "requirementCode": "VISA-13.1-G15",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "A Transaction that the Cardholder states is fraudulent",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "dispute.statedAsFraud"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "dispute.statedAsFraud",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G16",
+   "ordinal": 6,
+   "requirementCode": "VISA-13.1-G16",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "A Dispute regarding the quality of merchandise or service provided",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "dispute.descriptionAvailable"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "dispute.solelyAboutQuality"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "dispute.descriptionAvailable",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "dispute.solelyAboutQuality",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G17",
+   "ordinal": 7,
+   "requirementCode": "VISA-13.1-G17",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "A partial Advance Payment Transaction1 when the remaining balance was not\n  paid and the Merchant is willing and able to provide the merchandise or\n  services",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G18",
+   "ordinal": 8,
+   "requirementCode": "VISA-13.1-G18",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "The Cash-Back portion of a Visa Cash-Back Transaction",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "transaction.isCashBackPortion"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "transaction.isCashBackPortion",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G19",
+   "ordinal": 9,
+   "requirementCode": "VISA-13.1-G19",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "An Automated Fuel Dispenser Transaction",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "transaction.isAutomatedFuelDispenser"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "transaction.isAutomatedFuelDispenser",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G20",
+   "ordinal": 10,
+   "requirementCode": "VISA-13.1-G20",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "For a Transaction involving the acquisition non-fiat currency (for example:\n  cryptocurrency) or purchase of non-fungible token(s) (NFT) in which the\n  Cardholder can no longer access the non-fiat currency or non-fungible token\n  after it was successfully delivered (for example: the cardholder is unable to\n  access winnings, make a withdrawal, or transfer request).",
+   "passageId": "VISA-13.1-11.10.2.3",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G21",
+   "ordinal": 11,
+   "requirementCode": "VISA-13.1-G21",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "A Dispute must be processed no later than either:",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "delivery.agreedDeliveryDate",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G22",
+   "ordinal": 12,
+   "requirementCode": "VISA-13.1-G22",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "Not to exceed 540 calendar days from the Transaction Processing Date",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "NOT",
+    "operands": [
+     {
+      "op": "LTE",
+      "value": "540",
+      "factKeys": [
+       "dispute.daysAfterTransactionProcessing"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "dispute.daysAfterTransactionProcessing",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G23",
+   "ordinal": 13,
+   "requirementCode": "VISA-13.1-G23",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "If the Cardholder or traveler, or the Issuer on behalf of the Cardholder or\n  traveler was required to attempt to obtain reimbursement from a bonding\n  authority/insurance scheme, 60 days from the date of the letter or advice from\n  the bonding authority/insurance scheme1",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G24",
+   "ordinal": 14,
+   "requirementCode": "VISA-13.1-G24",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "Wait 15 calendar days1,2 from any one of the following:",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "cancellation.dateRelativeToTransaction",
+     "role": "INFORMS"
+    },
+    {
+     "factKey": "delivery.agreedDeliveryDate",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G25",
+   "ordinal": 15,
+   "requirementCode": "VISA-13.1-G25",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that\n  sell third-party event tickets, wait 30 calendar days1 from the date the service\n  provider cancelled the service.2",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G26",
+   "ordinal": 16,
+   "requirementCode": "VISA-13.1-G26",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that\n  sell third-party event tickets, wait 30 calendar days1 from the date the\n  Merchant canceled the service.5",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G27",
+   "ordinal": 17,
+   "requirementCode": "VISA-13.1-G27",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "If the Cardholder or traveler, or the Issuer on behalf of the Cardholder or\n  traveler was required to attempt to obtain reimbursement from a bonding\n  authority/insurance scheme, wait 60 calendar days from the date the claim\n  was submitted to the bonding authority/insurance scheme before initiating a\n  Dispute1,6,7",
+   "passageId": "VISA-13.1-11.10.2.4",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G28",
+   "ordinal": 18,
+   "requirementCode": "VISA-13.1-G28",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "Before the Issuer may initiate a Dispute, the Cardholder must attempt to\n  resolve the Dispute with the Merchant, the Merchant’s liquidator, Ramp\n  Provider, or its Conversion Affiliate as applicable.1",
+   "passageId": "VISA-13.1-11.10.2.2",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "NOT",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "cardholder.attemptedResolutionWithMerchant"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "cardholder.attemptedResolutionWithMerchant",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G29",
+   "ordinal": 19,
+   "requirementCode": "VISA-13.1-G29",
+   "kind": "PRECONDITION",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "If merchandise was delivered late, the Cardholder must return or attempt to\n  return the merchandise.",
+   "passageId": "VISA-13.1-11.10.2.2",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "NOT",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "return.attemptedOrCompleted"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "return.attemptedOrCompleted",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "delivery.daysAfterAgreedDate",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G30",
+   "ordinal": 20,
+   "requirementCode": "VISA-13.1-G30",
+   "kind": "PRECONDITION",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "For a Dispute related to non-receipt of travel services from a provider that is\ninsolvent or bankrupt, if the services are covered by a bonding\nauthority/insurance scheme, the Cardholder or traveler, or the Issuer on behalf of\nthe Cardholder or traveler must attempt to obtain reimbursement from the\nrelevant bonding authority/insurance scheme, unless the bond or insurance\nscheme is insufficient.",
+   "passageId": "VISA-13.1-11.10.2.2",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G1",
+   "ordinal": 21,
+   "requirementCode": "VISA-13.1-G1",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "A credit or Reversal issued by the Merchant was not addressed by the Issuer in\n  the Dispute",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ANY_OF",
+    "operands": [
+     {
+      "op": "ALL_OF",
+      "operands": [
+       {
+        "op": "IS_TRUE",
+        "factKeys": [
+         "credit.exists"
+        ]
+       },
+       {
+        "op": "IS_TRUE",
+        "factKeys": [
+         "credit.coversDisputed"
+        ]
+       },
+       {
+        "op": "IS_TRUE",
+        "factKeys": [
+         "credit.settledBeforeDispute"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "ALL_OF",
+      "operands": [
+       {
+        "op": "IS_TRUE",
+        "factKeys": [
+         "reversal.exists"
+        ]
+       },
+       {
+        "op": "IS_TRUE",
+        "factKeys": [
+         "reversal.settledBeforeDispute"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "credit.coversDisputed",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "credit.exists",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "credit.settledBeforeDispute",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "reversal.exists",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "reversal.settledBeforeDispute",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G10",
+   "ordinal": 22,
+   "requirementCode": "VISA-13.1-G10",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For Transactions involving the acquisition of non-fiat currency (for example:\n  cryptocurrency) or non-fungible token(s), evidence the non-fiat currency or\n  non-fungible token(s) was successfully delivered to the destination wallet\n  address supplied by the Cardholder at the time of the Transaction and one or\n  both of the following:",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "crypto.isNonFiatOrNftPurchase"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "crypto.deliveredToWalletOnRecord"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "crypto.deliveredToWalletOnRecord",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "crypto.isNonFiatOrNftPurchase",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G2",
+   "ordinal": 23,
+   "requirementCode": "VISA-13.1-G2",
+   "kind": "GROUND",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "The Cardholder no longer disputes the Transaction",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "cardholder.withdrawalOnFile",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G3",
+   "ordinal": 24,
+   "requirementCode": "VISA-13.1-G3",
+   "kind": "GROUND",
+   "outcome": "ESCALATE",
+   "determinable": false,
+   "requirementText": "The Cardholder or an authorized person received services at the agreed\n  location or by the agreed date/time",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": null,
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "delivery.agreedDeliveryDate",
+     "role": "INFORMS"
+    },
+    {
+     "factKey": "delivery.receivedDate",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G31",
+   "ordinal": 25,
+   "requirementCode": "VISA-13.1-G31",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "The Cardholder accepted a new delivery date - the Merchant provided evidence of a different, agreed delivery date for the merchandise or services",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "merchant.agreedToLaterDelivery"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "merchant.agreedToLaterDelivery",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G4",
+   "ordinal": 26,
+   "requirementCode": "VISA-13.1-G4",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For disputes related to merchandise, the Cardholder or authorized person\n  received the merchandise at the agreed location or by the agreed date/time,\n  including any of the following:",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "documents.downloadLogAvailable"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "download.recipientIndicatorsOnRecord"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "documents.downloadLogAvailable",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "download.recipientIndicatorsOnRecord",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G5",
+   "ordinal": 27,
+   "requirementCode": "VISA-13.1-G5",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For merchandise that was delivered, proof of delivery that contains the full\n    delivery address (tracking with partial address is not permitted)",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "EQUALS",
+      "value": "DELIVERED",
+      "factKeys": [
+       "delivery.status"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "delivery.podContainsFullAddress"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "delivery.podContainsFullAddress",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "delivery.status",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G6",
+   "ordinal": 28,
+   "requirementCode": "VISA-13.1-G6",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For Card-Absent Transactions where the merchandise was collected, pick\n    up document including acknowledgment from Cardholder or authorized\n    person (for example: signature, PIN, collection code)",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "EQUALS",
+      "value": "CARD_ABSENT",
+      "factKeys": [
+       "transaction.posEnvironment"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "documents.deliveryDocAvailable"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "delivery.acknowledgedByCardholder"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "delivery.acknowledgedByCardholder",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "documents.deliveryDocAvailable",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "transaction.posEnvironment",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G7",
+   "ordinal": 29,
+   "requirementCode": "VISA-13.1-G7",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For Transactions in a Card-Present Environment, certification that the\n    Cardholder took the merchandise at time of sale",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "merchant.certifiesCardholderTookMerchandiseAtSale"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "merchant.certifiesCardholderTookMerchandiseAtSale",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "transaction.isCardPresent",
+     "role": "INFORMS"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G8",
+   "ordinal": 30,
+   "requirementCode": "VISA-13.1-G8",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For an Airline Transaction, that the flight departed when the Cardholder is\n  disputing the flight did not take place.",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "ALL_OF",
+    "operands": [
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "transaction.isAirlineTransaction"
+      ]
+     },
+     {
+      "op": "IS_TRUE",
+      "factKeys": [
+       "airline.flightDeparted"
+      ]
+     }
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "airline.flightDeparted",
+     "role": "DECIDES"
+    },
+    {
+     "factKey": "transaction.isAirlineTransaction",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  },
+  {
+   "nodeId": "G9",
+   "ordinal": 31,
+   "requirementCode": "VISA-13.1-G9",
+   "kind": "GROUND",
+   "outcome": "FIGHT",
+   "determinable": true,
+   "requirementText": "For a Dispute related to future services, evidence to show that merchant did\n  not cancel and services were available.",
+   "passageId": "VISA-13.1-11.10.2.6",
+   "editionIntroduced": "18 April 2026",
+   "predicate": {
+    "op": "IS_TRUE",
+    "factKeys": [
+     "service.futureServicesAvailable"
+    ]
+   },
+   "appliesWhen": null,
+   "amountScope": "FULL",
+   "amountFactKey": null,
+   "factKeys": [
+    {
+     "factKey": "service.futureServicesAvailable",
+     "role": "DECIDES"
+    }
+   ],
+   "status": "APPROVED",
+   "approvedBy": "system"
+  }
+ ]
+}
