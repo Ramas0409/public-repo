@@ -1,996 +1,981 @@
 {
-  "tree": {
-    "id": 43,
-    "network": "VISA",
-    "conditionCode": "13.1",
-    "conditionName": "Dispute Condition 13.1: Merchandise/Services Not Received",
-    "rulebookEdition": "18 April 2026",
-    "treeVersion": "6",
-    "acquirerWorkflow": "DISPUTE_RESPONSE",
-    "acquirerGroundsPassageId": "VISA-13.1-11.10.2.6",
+    "nodes": [
+        {
+            "nodeId": "G11",
+            "ordinal": 1,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "transaction.isAtmCashDisbursement"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "An ATM Cash Disbursement"
+        },
+        {
+            "nodeId": "G12",
+            "ordinal": 2,
+            "outcome": "ESCALATE",
+            "predicate": null,
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": false,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A Straight Through Processing Transaction"
+        },
+        {
+            "nodeId": "G13",
+            "ordinal": 3,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.cancellationRecordAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "cancellation.beforeExpectedDelivery"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A Transaction in which the Cardholder cancelled the merchandise or service\n  before the expected delivery or service date (for example: the Cardholder\n  purchased merchandise and subsequently cancelled with the Merchant due to\n  buyer’s remorse)"
+        },
+        {
+            "nodeId": "G14",
+            "ordinal": 4,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.deliveryDocAvailable"
+                        ]
+                    },
+                    {
+                        "op": "EQUALS",
+                        "value": "CARDHOLDER_COUNTRY",
+                        "factKeys": [
+                            "delivery.customsHoldingCountryRole"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A Transaction in which merchandise is being held by the Cardholder’s\n  country’s customs agency"
+        },
+        {
+            "nodeId": "G15",
+            "ordinal": 5,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "dispute.descriptionAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "dispute.statedAsFraud"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A Transaction that the Cardholder states is fraudulent"
+        },
+        {
+            "nodeId": "G16",
+            "ordinal": 6,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "dispute.descriptionAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "dispute.solelyAboutQuality"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A Dispute regarding the quality of merchandise or service provided"
+        },
+        {
+            "nodeId": "G17",
+            "ordinal": 7,
+            "outcome": "ESCALATE",
+            "predicate": null,
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": false,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "A partial Advance Payment Transaction1 when the remaining balance was not\n  paid and the Merchant is willing and able to provide the merchandise or\n  services"
+        },
+        {
+            "nodeId": "G18",
+            "ordinal": 8,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "transaction.carriesCashBack"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "PARTIAL_BY_FACT",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": "transaction.cashBackAmount",
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "The Cash-Back portion of a Visa Cash-Back Transaction"
+        },
+        {
+            "nodeId": "G19",
+            "ordinal": 9,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "transaction.isAutomatedFuelDispenser"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "An Automated Fuel Dispenser Transaction"
+        },
+        {
+            "nodeId": "G20",
+            "ordinal": 10,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "crypto.isNonFiatOrNftPurchase"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "crypto.deliveredToWalletOnRecord"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "crypto.cardholderComplaintIsPostDeliveryAccessLoss"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.3",
+            "requirementText": "For a Transaction involving the acquisition non-fiat currency (for example:\n  cryptocurrency) or purchase of non-fungible token(s) (NFT) in which the\n  Cardholder can no longer access the non-fiat currency or non-fungible token\n  after it was successfully delivered (for example: the cardholder is unable to\n  access winnings, make a withdrawal, or transfer request)."
+        },
+        {
+            "nodeId": "G22",
+            "ordinal": 11,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "GTE",
+                "value": "541",
+                "factKeys": [
+                    "dispute.daysAfterTransactionProcessing"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "delivery.expectedDateSpecified"
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "Not to exceed 540 calendar days from the Transaction Processing Date"
+        },
+        {
+            "nodeId": "G25",
+            "ordinal": 12,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "LTE",
+                "value": "29",
+                "factKeys": [
+                    "dispute.daysAfterServiceCancellation"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "ANY_OF",
+                        "operands": [
+                            {
+                                "op": "EQUALS",
+                                "value": "4722",
+                                "factKeys": [
+                                    "transaction.mcc"
+                                ]
+                            },
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "merchant.isTicketAgencySellingThirdPartyEventTickets"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "supplyingParty.insolventOrBankrupt"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that\n  sell third-party event tickets, wait 30 calendar days1 from the date the service\n  provider cancelled the service.2"
+        },
+        {
+            "nodeId": "G28",
+            "ordinal": 13,
+            "outcome": "ESCALATE",
+            "predicate": null,
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "NOT",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "travel.virtualAccountContractCoversSpecifiedServices"
+                        ]
+                    }
+                ]
+            },
+            "determinable": false,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.2",
+            "requirementText": "Before the Issuer may initiate a Dispute, the Cardholder must attempt to\n  resolve the Dispute with the Merchant, the Merchant’s liquidator, Ramp\n  Provider, or its Conversion Affiliate as applicable.1"
+        },
+        {
+            "nodeId": "G29",
+            "ordinal": 14,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "NOT",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "return.attemptedOrCompleted"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "EQUALS",
+                        "value": "DELIVERED",
+                        "factKeys": [
+                            "delivery.status"
+                        ]
+                    },
+                    {
+                        "op": "GTE",
+                        "value": "1",
+                        "factKeys": [
+                            "delivery.daysAfterAgreedDate"
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.2",
+            "requirementText": "If merchandise was delivered late, the Cardholder must return or attempt to\n  return the merchandise."
+        },
+        {
+            "nodeId": "G32",
+            "ordinal": 15,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "GTE",
+                "value": "121",
+                "factKeys": [
+                    "dispute.daysAfterTransactionProcessing"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "NOT",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "delivery.expectedDateSpecified"
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "120 calendar days from the Transaction Processing Date"
+        },
+        {
+            "nodeId": "G33",
+            "ordinal": 16,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "GTE",
+                "value": "121",
+                "factKeys": [
+                    "dispute.daysAfterAgreedDate"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "delivery.expectedDateSpecified"
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "120 calendar days from the last date that the Cardholder expected to receive\n  the merchandise or services3,4"
+        },
+        {
+            "nodeId": "G34",
+            "ordinal": 17,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "LTE",
+                "value": "14",
+                "factKeys": [
+                    "dispute.daysAfterTransactionDate"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "delivery.expectedDateSpecified"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "supplyingParty.insolventOrBankrupt"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "The Transaction Date, if the date the services were expected or the delivery\n    date for the merchandise is not specified"
+        },
+        {
+            "nodeId": "G35",
+            "ordinal": 18,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "LTE",
+                "value": "14",
+                "factKeys": [
+                    "dispute.daysAfterReturnAttempt"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "ALL_OF",
+                        "operands": [
+                            {
+                                "op": "EQUALS",
+                                "value": "DELIVERED",
+                                "factKeys": [
+                                    "delivery.status"
+                                ]
+                            },
+                            {
+                                "op": "GTE",
+                                "value": "1",
+                                "factKeys": [
+                                    "delivery.daysAfterAgreedDate"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "supplyingParty.insolventOrBankrupt"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "The date the Cardholder returned or attempted to return the merchandise,\n    if the merchandise was returned due to late delivery"
+        },
+        {
+            "nodeId": "G36",
+            "ordinal": 19,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "LTE",
+                "value": "14",
+                "factKeys": [
+                    "dispute.daysAfterServiceCancellation"
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "PRECONDITION",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "ANY_OF",
+                                "operands": [
+                                    {
+                                        "op": "EQUALS",
+                                        "value": "4722",
+                                        "factKeys": [
+                                            "transaction.mcc"
+                                        ]
+                                    },
+                                    {
+                                        "op": "IS_TRUE",
+                                        "factKeys": [
+                                            "merchant.isTicketAgencySellingThirdPartyEventTickets"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "supplyingParty.insolventOrBankrupt"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.4",
+            "requirementText": "The date the Merchant canceled the goods or services"
+        },
+        {
+            "nodeId": "G1",
+            "ordinal": 20,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "credit.exists"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "credit.settledBeforeDispute"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "PARTIAL_BY_FACT",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": "credit.amount",
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "A credit or Reversal issued by the Merchant was not addressed by the Issuer in\n  the Dispute"
+        },
+        {
+            "nodeId": "G10",
+            "ordinal": 21,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "crypto.isNonFiatOrNftPurchase"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "crypto.deliveredToWalletOnRecord"
+                        ]
+                    },
+                    {
+                        "op": "ANY_OF",
+                        "operands": [
+                            {
+                                "op": "IS_PRESENT",
+                                "factKeys": [
+                                    "crypto.txHashOnRecord"
+                                ]
+                            },
+                            {
+                                "op": "IS_PRESENT",
+                                "factKeys": [
+                                    "crypto.destinationWalletAddress"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "CAPPED",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": "crypto.costAtTransactionAmount",
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For Transactions involving the acquisition of non-fiat currency (for example:\n  cryptocurrency) or non-fungible token(s), evidence the non-fiat currency or\n  non-fungible token(s) was successfully delivered to the destination wallet\n  address supplied by the Cardholder at the time of the Transaction and one or\n  both of the following:"
+        },
+        {
+            "nodeId": "G2",
+            "ordinal": 22,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.merchantCorrespondenceAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "cardholder.confirmedResolvedInMerchantRecords"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "The Cardholder no longer disputes the Transaction"
+        },
+        {
+            "nodeId": "G3",
+            "ordinal": 23,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.serviceRecordAvailable"
+                        ]
+                    },
+                    {
+                        "op": "ANY_OF",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "service.usageEvidencedOnRecord"
+                                ]
+                            },
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "service.attendedAtAgreedLocation"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "The Cardholder or an authorized person received services at the agreed\n  location or by the agreed date/time"
+        },
+        {
+            "nodeId": "G4",
+            "ordinal": 24,
+            "outcome": "ESCALATE",
+            "predicate": null,
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": false,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For disputes related to merchandise, the Cardholder or authorized person\n  received the merchandise at the agreed location or by the agreed date/time,\n  including any of the following:"
+        },
+        {
+            "nodeId": "G5",
+            "ordinal": 25,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.deliveryDocAvailable"
+                        ]
+                    },
+                    {
+                        "op": "EQUALS",
+                        "value": "DELIVERED",
+                        "factKeys": [
+                            "delivery.status"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "delivery.podContainsFullAddress"
+                        ]
+                    },
+                    {
+                        "op": "EQUALS_KEY",
+                        "factKeys": [
+                            "delivery.podAddress",
+                            "delivery.agreedLocationAddress"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": null,
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For merchandise that was delivered, proof of delivery that contains the full\n    delivery address (tracking with partial address is not permitted)"
+        },
+        {
+            "nodeId": "G6",
+            "ordinal": 26,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.deliveryDocAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "delivery.acknowledgedByCardholder"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "EQUALS",
+                "value": "CARD_ABSENT",
+                "factKeys": [
+                    "transaction.posEnvironment"
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For Card-Absent Transactions where the merchandise was collected, pick\n    up document including acknowledgment from Cardholder or authorized\n    person (for example: signature, PIN, collection code)"
+        },
+        {
+            "nodeId": "G7",
+            "ordinal": 27,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.merchantCertificationAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "merchant.certifiesCardholderTookMerchandiseAtSale"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "transaction.isCardPresent"
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For Transactions in a Card-Present Environment, certification that the\n    Cardholder took the merchandise at time of sale"
+        },
+        {
+            "nodeId": "G8",
+            "ordinal": 28,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.airlineRecordAvailable"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "airline.flightDeparted"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "transaction.isAirlineTransaction"
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "dispute.complaintIsFlightDidNotTakePlace"
+                        ]
+                    }
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For an Airline Transaction, that the flight departed when the Cardholder is\n  disputing the flight did not take place."
+        },
+        {
+            "nodeId": "G9",
+            "ordinal": 29,
+            "outcome": "FIGHT",
+            "predicate": {
+                "op": "ALL_OF",
+                "operands": [
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "documents.serviceAvailabilityRecordAvailable"
+                        ]
+                    },
+                    {
+                        "op": "NOT",
+                        "operands": [
+                            {
+                                "op": "IS_TRUE",
+                                "factKeys": [
+                                    "merchant.notifiedCardholderOfCancellation"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "op": "IS_TRUE",
+                        "factKeys": [
+                            "service.futureServicesAvailable"
+                        ]
+                    }
+                ]
+            },
+            "approvedBy": "Ram (architect, POC) - EUROPE live run; NOT an SME ruling",
+            "groundRole": "GROUND",
+            "amountScope": "FULL",
+            "appliesWhen": {
+                "op": "IS_TRUE",
+                "factKeys": [
+                    "transaction.isLaterDateDeliveryOrFutureServices"
+                ]
+            },
+            "determinable": true,
+            "amountFactKey": null,
+            "anchorPassageId": "VISA-13.1-11.10.2.6",
+            "requirementText": "For a Dispute related to future services, evidence to show that merchant did\n  not cancel and services were available."
+        }
+    ],
+    "region": "ALL",
     "status": "APPROVED",
-    "sourceHash": "sha256:1c2ac0abd8597c826d6edd840bc562963a46aae50dba0fa74d31088f13fda50f",
-    "signedBy": "Ram",
-    "signedAt": "2026-08-23T10:25:46.105558"
-  },
-  "nodes": [
-    {
-      "nodeId": "G11",
-      "ordinal": 1,
-      "requirementCode": "VISA-13.1-G11",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "An ATM Cash Disbursement",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "transaction.isAtmCashDisbursement"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "transaction.isAtmCashDisbursement",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G12",
-      "ordinal": 2,
-      "requirementCode": "VISA-13.1-G12",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "A Straight Through Processing Transaction",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "transaction.isStraightThroughProcessing",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G13",
-      "ordinal": 3,
-      "requirementCode": "VISA-13.1-G13",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "A Transaction in which the Cardholder cancelled the merchandise or service\n  before the expected delivery or service date (for example: the Cardholder\n  purchased merchandise and subsequently cancelled with the Merchant due to\n  buyer’s remorse)",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "documents.cancellationRecordAvailable"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "cancellation.beforeExpectedDelivery"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "cancellation.beforeExpectedDelivery",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "documents.cancellationRecordAvailable",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G14",
-      "ordinal": 4,
-      "requirementCode": "VISA-13.1-G14",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "A Transaction in which merchandise is being held by the Cardholder’s\n  country’s customs agency",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "EQUALS",
-        "value": "CARDHOLDER_COUNTRY",
-        "factKeys": [
-          "delivery.customsHoldingCountryRole"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.customsHoldingCountryRole",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G15",
-      "ordinal": 5,
-      "requirementCode": "VISA-13.1-G15",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "A Transaction that the Cardholder states is fraudulent",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "dispute.statedAsFraud"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "dispute.statedAsFraud",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G16",
-      "ordinal": 6,
-      "requirementCode": "VISA-13.1-G16",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "A Dispute regarding the quality of merchandise or service provided",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "dispute.descriptionAvailable"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "dispute.solelyAboutQuality"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "dispute.descriptionAvailable",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "dispute.solelyAboutQuality",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G17",
-      "ordinal": 7,
-      "requirementCode": "VISA-13.1-G17",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "A partial Advance Payment Transaction1 when the remaining balance was not\n  paid and the Merchant is willing and able to provide the merchandise or\n  services",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G18",
-      "ordinal": 8,
-      "requirementCode": "VISA-13.1-G18",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "The Cash-Back portion of a Visa Cash-Back Transaction",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "transaction.isCashBackPortion"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "transaction.isCashBackPortion",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G19",
-      "ordinal": 9,
-      "requirementCode": "VISA-13.1-G19",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "An Automated Fuel Dispenser Transaction",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "transaction.isAutomatedFuelDispenser"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "transaction.isAutomatedFuelDispenser",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G20",
-      "ordinal": 10,
-      "requirementCode": "VISA-13.1-G20",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "For a Transaction involving the acquisition non-fiat currency (for example:\n  cryptocurrency) or purchase of non-fungible token(s) (NFT) in which the\n  Cardholder can no longer access the non-fiat currency or non-fungible token\n  after it was successfully delivered (for example: the cardholder is unable to\n  access winnings, make a withdrawal, or transfer request).",
-      "passageId": "VISA-13.1-11.10.2.3",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G21",
-      "ordinal": 11,
-      "requirementCode": "VISA-13.1-G21",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "A Dispute must be processed no later than either:",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.agreedDeliveryDate",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G22",
-      "ordinal": 12,
-      "requirementCode": "VISA-13.1-G22",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "Not to exceed 540 calendar days from the Transaction Processing Date",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "NOT",
-        "operands": [
-          {
-            "op": "LTE",
-            "value": "540",
-            "factKeys": [
-              "dispute.daysAfterTransactionProcessing"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "dispute.daysAfterTransactionProcessing",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G23",
-      "ordinal": 13,
-      "requirementCode": "VISA-13.1-G23",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "If the Cardholder or traveler, or the Issuer on behalf of the Cardholder or\n  traveler was required to attempt to obtain reimbursement from a bonding\n  authority/insurance scheme, 60 days from the date of the letter or advice from\n  the bonding authority/insurance scheme1",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G24",
-      "ordinal": 14,
-      "requirementCode": "VISA-13.1-G24",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "Wait 15 calendar days1,2 from any one of the following:",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "cancellation.dateRelativeToTransaction",
-          "role": "INFORMS"
-        },
-        {
-          "factKey": "delivery.agreedDeliveryDate",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G25",
-      "ordinal": 15,
-      "requirementCode": "VISA-13.1-G25",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that\n  sell third-party event tickets, wait 30 calendar days1 from the date the service\n  provider cancelled the service.2",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G26",
-      "ordinal": 16,
-      "requirementCode": "VISA-13.1-G26",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that\n  sell third-party event tickets, wait 30 calendar days1 from the date the\n  Merchant canceled the service.5",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G27",
-      "ordinal": 17,
-      "requirementCode": "VISA-13.1-G27",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "If the Cardholder or traveler, or the Issuer on behalf of the Cardholder or\n  traveler was required to attempt to obtain reimbursement from a bonding\n  authority/insurance scheme, wait 60 calendar days from the date the claim\n  was submitted to the bonding authority/insurance scheme before initiating a\n  Dispute1,6,7",
-      "passageId": "VISA-13.1-11.10.2.4",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G28",
-      "ordinal": 18,
-      "requirementCode": "VISA-13.1-G28",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "Before the Issuer may initiate a Dispute, the Cardholder must attempt to\n  resolve the Dispute with the Merchant, the Merchant’s liquidator, Ramp\n  Provider, or its Conversion Affiliate as applicable.1",
-      "passageId": "VISA-13.1-11.10.2.2",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "NOT",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "cardholder.attemptedResolutionWithMerchant"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "cardholder.attemptedResolutionWithMerchant",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G29",
-      "ordinal": 19,
-      "requirementCode": "VISA-13.1-G29",
-      "kind": "PRECONDITION",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "If merchandise was delivered late, the Cardholder must return or attempt to\n  return the merchandise.",
-      "passageId": "VISA-13.1-11.10.2.2",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "NOT",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "return.attemptedOrCompleted"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.daysAfterAgreedDate",
-          "role": "INFORMS"
-        },
-        {
-          "factKey": "return.attemptedOrCompleted",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G30",
-      "ordinal": 20,
-      "requirementCode": "VISA-13.1-G30",
-      "kind": "PRECONDITION",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "For a Dispute related to non-receipt of travel services from a provider that is\ninsolvent or bankrupt, if the services are covered by a bonding\nauthority/insurance scheme, the Cardholder or traveler, or the Issuer on behalf of\nthe Cardholder or traveler must attempt to obtain reimbursement from the\nrelevant bonding authority/insurance scheme, unless the bond or insurance\nscheme is insufficient.",
-      "passageId": "VISA-13.1-11.10.2.2",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G1",
-      "ordinal": 21,
-      "requirementCode": "VISA-13.1-G1",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "A credit or Reversal issued by the Merchant was not addressed by the Issuer in\n  the Dispute",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ANY_OF",
-        "operands": [
-          {
-            "op": "ALL_OF",
-            "operands": [
-              {
-                "op": "IS_TRUE",
-                "factKeys": [
-                  "credit.exists"
-                ]
-              },
-              {
-                "op": "IS_TRUE",
-                "factKeys": [
-                  "credit.coversDisputed"
-                ]
-              },
-              {
-                "op": "IS_TRUE",
-                "factKeys": [
-                  "credit.settledBeforeDispute"
-                ]
-              }
-            ]
-          },
-          {
-            "op": "ALL_OF",
-            "operands": [
-              {
-                "op": "IS_TRUE",
-                "factKeys": [
-                  "reversal.exists"
-                ]
-              },
-              {
-                "op": "IS_TRUE",
-                "factKeys": [
-                  "reversal.settledBeforeDispute"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "credit.coversDisputed",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "credit.exists",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "credit.settledBeforeDispute",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "reversal.exists",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "reversal.settledBeforeDispute",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G10",
-      "ordinal": 22,
-      "requirementCode": "VISA-13.1-G10",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For Transactions involving the acquisition of non-fiat currency (for example:\n  cryptocurrency) or non-fungible token(s), evidence the non-fiat currency or\n  non-fungible token(s) was successfully delivered to the destination wallet\n  address supplied by the Cardholder at the time of the Transaction and one or\n  both of the following:",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "crypto.isNonFiatOrNftPurchase"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "crypto.deliveredToWalletOnRecord"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "crypto.deliveredToWalletOnRecord",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "crypto.isNonFiatOrNftPurchase",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G2",
-      "ordinal": 23,
-      "requirementCode": "VISA-13.1-G2",
-      "kind": "GROUND",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "The Cardholder no longer disputes the Transaction",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "cardholder.withdrawalOnFile",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G3",
-      "ordinal": 24,
-      "requirementCode": "VISA-13.1-G3",
-      "kind": "GROUND",
-      "outcome": "ESCALATE",
-      "determinable": false,
-      "requirementText": "The Cardholder or an authorized person received services at the agreed\n  location or by the agreed date/time",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": null,
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.agreedDeliveryDate",
-          "role": "INFORMS"
-        },
-        {
-          "factKey": "delivery.receivedDate",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G31",
-      "ordinal": 25,
-      "requirementCode": "VISA-13.1-G31",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "The Cardholder accepted a new delivery date - the Merchant provided evidence of a different, agreed delivery date for the merchandise or services",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "merchant.agreedToLaterDelivery"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "merchant.agreedToLaterDelivery",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G4",
-      "ordinal": 26,
-      "requirementCode": "VISA-13.1-G4",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For disputes related to merchandise, the Cardholder or authorized person\n  received the merchandise at the agreed location or by the agreed date/time,\n  including any of the following:",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "documents.downloadLogAvailable"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "download.recipientIndicatorsOnRecord"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "documents.downloadLogAvailable",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "download.recipientIndicatorsOnRecord",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G5",
-      "ordinal": 27,
-      "requirementCode": "VISA-13.1-G5",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For merchandise that was delivered, proof of delivery that contains the full\n    delivery address (tracking with partial address is not permitted)",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "EQUALS",
-            "value": "DELIVERED",
-            "factKeys": [
-              "delivery.status"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "delivery.podContainsFullAddress"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.podContainsFullAddress",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "delivery.status",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G6",
-      "ordinal": 28,
-      "requirementCode": "VISA-13.1-G6",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For Card-Absent Transactions where the merchandise was collected, pick\n    up document including acknowledgment from Cardholder or authorized\n    person (for example: signature, PIN, collection code)",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "EQUALS",
-            "value": "CARD_ABSENT",
-            "factKeys": [
-              "transaction.posEnvironment"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "documents.deliveryDocAvailable"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "delivery.acknowledgedByCardholder"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "delivery.acknowledgedByCardholder",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "documents.deliveryDocAvailable",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "transaction.posEnvironment",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "system (POC auto-approval, authorized by Ram 2026-08-22)"
-    },
-    {
-      "nodeId": "G7",
-      "ordinal": 29,
-      "requirementCode": "VISA-13.1-G7",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For Transactions in a Card-Present Environment, certification that the\n    Cardholder took the merchandise at time of sale",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "merchant.certifiesCardholderTookMerchandiseAtSale"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "merchant.certifiesCardholderTookMerchandiseAtSale",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "transaction.isCardPresent",
-          "role": "INFORMS"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G8",
-      "ordinal": 30,
-      "requirementCode": "VISA-13.1-G8",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For an Airline Transaction, that the flight departed when the Cardholder is\n  disputing the flight did not take place.",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "ALL_OF",
-        "operands": [
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "transaction.isAirlineTransaction"
-            ]
-          },
-          {
-            "op": "IS_TRUE",
-            "factKeys": [
-              "airline.flightDeparted"
-            ]
-          }
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "airline.flightDeparted",
-          "role": "DECIDES"
-        },
-        {
-          "factKey": "transaction.isAirlineTransaction",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    },
-    {
-      "nodeId": "G9",
-      "ordinal": 31,
-      "requirementCode": "VISA-13.1-G9",
-      "kind": "GROUND",
-      "outcome": "FIGHT",
-      "determinable": true,
-      "requirementText": "For a Dispute related to future services, evidence to show that merchant did\n  not cancel and services were available.",
-      "passageId": "VISA-13.1-11.10.2.6",
-      "editionIntroduced": "18 April 2026",
-      "predicate": {
-        "op": "IS_TRUE",
-        "factKeys": [
-          "service.futureServicesAvailable"
-        ]
-      },
-      "appliesWhen": null,
-      "amountScope": "FULL",
-      "amountFactKey": null,
-      "factKeys": [
-        {
-          "factKey": "service.futureServicesAvailable",
-          "role": "DECIDES"
-        }
-      ],
-      "status": "APPROVED",
-      "approvedBy": "Ram"
-    }
-  ]
+    "network": "VISA",
+    "approvedBy": "Ram (architect, POC) - closeout; NOT an SME ruling",
+    "reasonCode": "13.1",
+    "sourceHash": "sha256:bf6cada0fb14136c2333ba6e3def00a5281b037abebd5204cc217f5618ad9f44",
+    "treeVersion": "9",
+    "rulebookEdition": "18 April 2026",
+    "regionSourceField": "wdp.case.c_acq_platform (acquiring platform, via Transaction.acquiringPlatform)"
 }
