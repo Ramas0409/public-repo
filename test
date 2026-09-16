@@ -1,0 +1,31 @@
+1. Imports — after import os (line 6):
+
+from pathlib import Path
+
+2. Inside test_llm_access, just above headers = { (~line 27) — the loading block:
+
+    raw = Path("POCVISA13117-20260916-064025.prompt.txt").read_text(encoding="utf-8")
+    SYS = "=" * 27 + " SYSTEM MESSAGE " + "=" * 27
+    USR = "=" * 28 + " USER MESSAGE " + "=" * 28
+    system = raw.split(SYS, 1)[1].split(USR, 1)[0].strip("\n")
+    user   = raw.split(USR, 1)[1].strip("\n")
+    print(f"system {len(system)} chars, user {len(user)} chars")
+
+Indented one level — it's inside the function.
+
+3. The payload = { block (~lines 32-43) — replace the messages list and max_tokens:
+
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user",   "content": user},
+        ],
+        "max_tokens": 6000,
+        "temperature": 1,
+        "reasoning_effort": "low",
+    }
+
+4. The requests.post(...) line just below: timeout=30 → timeout=120.
+
+Put the .prompt.txt file in C:\workspace-llm beside test_llm.py, or give the full path in the Path(...) call — it's relative to where you run python from, not where the script lives.
