@@ -1,0 +1,100 @@
+{
+  "cardholderSays": {
+    "sentence": "The cardholder says they paid 25.46 GBP on 2025-06-03 for a spare part but had not received anything, with last expected receipt on 2025-06-20.",
+    "documentRef": "I1",
+    "page": 1
+  },
+  "merchantRecordsShow": {
+    "sentence": "The merchant's records say a part was dispatched on 2025-06-04 and show a carrier delivery record signed for on 2025-06-05 with one piece delivered.",
+    "citations": [
+      {
+        "documentRef": "M1",
+        "page": 1
+      },
+      {
+        "documentRef": "M1",
+        "page": 2
+      }
+    ]
+  },
+  "otherPurchasesInPack": false,
+  "nominated": [
+    {
+      "code": "13.1-G5",
+      "strength": "STRONGEST",
+      "fits": "The records bear on delivered merchandise because the merchant record says the part was dispatched and the carrier record shows delivery to the receiver address with a signature and delivered pieces, with nothing in the pack showing delivery elsewhere.",
+      "explanation": "The merchant contests the dispute under the rule for merchandise that was delivered, with proof of delivery that contains the full delivery address. The merchant's dispute record states that the part was dispatched on 2025-06-04 and signed for on 2025-06-05 (merchant document, page 1). The carrier delivery record for the same shipment shows the receiver details, a signed-by field, a delivery date and time of 2025-06-05 10:22, and one delivered piece (merchant document, page 2). These records support that the spare part was delivered rather than not received.",
+      "note": "The merchant's records show dispatch of the part and a carrier delivery record with receiver details, signature and one delivered piece.",
+      "evidence": [
+        {
+          "source": "MERCHANT_DOCUMENT",
+          "documentRef": "M1",
+          "page": 2,
+          "quote": "Receiver:\nJane Bloggs\n123 Worldpay Street\nAB12 3CD    Sample City\nContact:\nTel:\nWeight(kg):\n1.210\nVolume(m3):\n.001\nOption1:\nOption2:\nOption3:\nOption4:\nCOD Amount:\nCOD Type:\nDeclared Pieces:  1\nSigned by:\nJ.Bloggs\nDate and Time:     05/06/2025 10:22\nDelivered Pieces:  1"
+        },
+        {
+          "source": "MERCHANT_DOCUMENT",
+          "documentRef": "M1",
+          "page": 1,
+          "quote": "Part was despatched 04.06.2025 on invoice 5030418923 signed for 05.06.2025"
+        },
+        {
+          "source": "CASE_RECORD",
+          "field": "transaction.channel"
+        },
+        {
+          "source": "CASE_RECORD",
+          "field": "transaction.posEnvironment"
+        }
+      ]
+    }
+  ],
+  "notNominated": [
+    {
+      "code": "13.1-G2",
+      "why": "NO_RECORD_OF_IT"
+    },
+    {
+      "code": "13.1-G3",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G6",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G7",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G8",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G9",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G10",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    }
+  ],
+  "supplementary": [],
+  "otherArguments": [],
+  "letter": {
+    "summaryBasis": "The merchant relies on proof of delivery for the merchandise. The merchant records show the part was dispatched and the carrier delivery record shows the delivery details, signature and delivered piece count.",
+    "claimAndResponse": {
+      "documentRef": "I1",
+      "page": 1,
+      "claimQuote": "I paid for spare part but I didn't not received anything yet",
+      "response": "The merchant record states that the part was despatched on 2025-06-04 and signed for on 2025-06-05 [M1 p1]. The carrier record shows the receiver address, a signed-by field, a delivery timestamp of 2025-06-05 10:22, and one delivered piece [M1 p2]."
+    },
+    "sections": [
+      {
+        "code": "13.1-G5",
+        "facts": "The merchant's dispute record states: \u201cPart was despatched 04.06.2025 on invoice 5030418923 signed for 05.06.2025\u201d [M1 p1]. The carrier record shows the receiver address as \u201c123 Worldpay Street AB12 3CD Sample City\u201d [M1 p2]. The carrier record shows \u201cSigned by: J.Bloggs\u201d and \u201cDate and Time: 05/06/2025 10:22\u201d [M1 p2]. The carrier record shows \u201cDeclared Pieces: 1\u201d and \u201cDelivered Pieces: 1\u201d [M1 p2]."
+      }
+    ]
+  },
+  "unsettled": false
+}

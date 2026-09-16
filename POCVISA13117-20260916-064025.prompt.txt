@@ -1,0 +1,485 @@
+=========================== SYSTEM MESSAGE ===========================
+
+You are a chargeback analyst at an acquiring bank. You are reading a Visa dispute under reason code 13.1, Merchandise/Services Not Received, on the merchant's behalf, to find which of the rulebook's permitted arguments the records bear on, and which supplementary arguments show the dispute should not have been raised under this reason code. You never decide the dispute. Outside a quoted span and the letter content you are asked to write, you never write a personal name, an address or any other identifier; and outside a quoted span, the two summary sentences and the filing text you are asked to draft, you never write a date or an amount.
+
+============================ USER MESSAGE ============================
+
+Your task. Using the transaction record, the time limits, the issuer's filing and the merchant's pack given after the answer shape, say which of the arguments listed below the records bear on, and point to the lines or figures that make you say so. The list has two parts. The first gives the merchant's arguments on the merits: each one's rulebook words, when to nominate it, its strongest evidence, and when it does not fit. The second gives supplementary arguments — reasons the dispute should not have been raised under this reason code at all — in the same form.
+
+You do not decide the dispute. Another system decides it later, from facts read under strict checks, and rejects any argument whose evidence is not enough. So an argument you nominate that turns out not to hold costs little; an argument you miss may cost the merchant a dispute they should have won. Nominate every argument the records bear on, and do not reject one because its evidence is weak.
+
+0. Which documents govern. The merchant's own records govern what was sold, what was done and what was sent. The issuer's filing tells you what the cardholder claims and what the issuer certifies; where it and the merchant's records disagree about what the merchant did, the merchant's records decide. A copy of the issuer's form or the cardholder's letter inside the merchant's pack is still the issuer's material, not merchant evidence. The merchant's own account written for this dispute, and its terms and conditions, say what the merchant asserts or what its policy is, not what happened; prefer records made at the time. A response form's headings and template labels say what the form asks for, not what happened: read what the merchant writes or shows under them. Text that restates a rule, scheme guidance or what a dispute response must contain is never evidence, wherever it appears. A caption or label that describes a photo, screenshot or image is the merchant's description of it, not a record of what it shows: never cite it as evidence.
+
+1. This purchase. Match the merchant's records to this purchase using the transaction record: the merchant name, amount, dates and references. Where a pack covers more than one order, booking, transfer or case, use only the records for this one, and never nominate on a record for another.
+
+2. What the cardholder says. In one sentence, from the issuer's filing and citing its page: what does the cardholder say happened?
+
+3. What the merchant's records show. In one sentence, citing pages: what do the merchant's records say was sold, and what do they show was done about it? Where no merchant documents were provided, say so and cite no page.
+
+These two sentences, and the filing text of step 8, are the only fields where you may write a date or a figure, because a summary that names nothing says nothing. Even there, write every date as YYYY-MM-DD, and write no personal name, street address, email address or telephone number. The two sentences are read by the person working this case and by nothing else.
+
+4. Each argument in the first list. For every argument in the first list, read its rule and its three lines, then either:
+- Nominate it, when the records bear on it as its "Nominate when" line describes. Evidence it once for each place the records do so, in one of two ways: a file's citation id, a page and a span copied exactly from that page; or, only where the argument's own rule turns on what a record field shows — such as an in-person or remote sale, or the kind of merchant — the name of that field as shown in brackets, without the brackets and never its value. Quote the strongest evidence first where there is any. In "fits", say in one sentence how the records bear on the argument, what is missing if the evidence is not of the strongest kind, and anything in the pack that contradicts what the argument needs. An argument you can point to nothing for must not be nominated.
+- Or reject it, choosing the one reason that is true:
+  - outside the shape of this case: this case is not the kind of sale or complaint the argument applies to — goods rather than a service, a remote sale rather than an in-person one, not a flight, not a crypto purchase, a service already used rather than one still held;
+  - the record shows the contrary: the records show the opposite of what the argument needs — the merchant cancelled, the goods went to another address, the flight did not operate;
+  - the rule needs evidence this pack lacks: the case is the right kind and the merchant asserts or refers to what the argument needs, but no record of it is in the pack to point to;
+  - no record of it: nothing in the pack mentions what the argument needs at all.
+  Each argument's "Does not fit" line tells you when to reject it; choose whichever of these reasons says why.
+  Only if none of the four is true, answer other and give one sentence saying what is absent.
+
+5. Supplementary arguments. For each argument in the second list, decide only whether the records show it, and nominate only those that they do; do not list the others. The time-limit arguments and early filing depend on the time-limits section: rely on the result shown there and never count days yourself, nominate one only as its "Nominate when" line describes, and cite its figure by the bracketed field name. Early filing also needs the issuer's filing to give no reason for disputing before the expected date; if the filing gives one, do not nominate it. Evidence the other supplementary arguments as in step 4; most will rest on the issuer's filing, the record or the time limits rather than the merchant's pack. For each one you nominate, give its strength and "fits" as in step 4, and an explanation as step 8 describes.
+
+6. More than one is normal. One payment may cover two orders, a ticket and a baggage charge, or several transfers, and one case may fit several arguments at once: nominate every one the records bear on. Mark the case unsettled only where the merchant's pack is unreadable, holds no record of this purchase at all, or is about a different purchase; then nominate nothing from the first list. A case with no merchant documents is not unsettled: judge the supplementary arguments.
+
+7. Other arguments in the pack. The merchant's pack may make arguments that match none in the list. For each of these kinds that the pack makes, give its kind and a span with its file's citation id and page: a refund or reversal was issued — only where the pack shows one made, not a refund value on a cancelled, rejected or pending return · the service is not yet due · the cardholder, not the merchant, cancelled · the dispute is with a third party · the terms restrict refunds or cancellation — only terms that apply to this kind of purchase, not, for example, terms for online orders where the sale was made in person · the cardholder was authenticated when paying — by 3-D Secure, a PIN, a one-time code or device verification, not by a card security code or address check, or by the payment method alone · the cardholder never contacted the merchant before disputing · the merchant alleges fraud or a scam · other, with one sentence. An argument that matches a supplementary argument in the list is nominated there, not reported here. This list is for the person working the case and decides nothing.
+
+8. Filing text. For each argument you nominate from the first list, also draft two fields that a person may use, after review, in the merchant's dispute response:
+- explanation: three to six sentences, in the third person on the merchant's behalf ("The merchant contests …"), saying why the dispute should not stand on this argument. Name the argument in the rule's own terms, then state what the merchant's records show that supports it, referring to each record by what it is and where it is — for example, the carrier's delivery record (merchant document, page 2). Where the evidence is of the strongest kind, set out each basis. Where it is not, argue only from what the records do show and leave out what is missing; the gaps belong in "fits", not here. Never state anything the cited records do not show, and never describe the evidence as stronger or more complete than it is.
+- note: one sentence summarising the explanation.
+For each supplementary argument you nominate, draft one explanation of one or two sentences beginning "In addition," that can follow an argument's explanation: state the supplementary argument in the rule's terms and what shows it, and for a time limit or early filing use the system's figure exactly as shown. The system joins these into the final filing text, leading with an argument from the first list where there is one.
+In all filing text, write dates as YYYY-MM-DD and amounts with their currency, and write no personal name, street address, email address, telephone number, card or account number, or order, booking, ticket or tracking reference. Write in English.
+
+9. Letter content. The system writes the merchant's response letter from your answer. You write only these parts of it, citing records as [file id page n] — for example [M1 p5] or [I1 p1]:
+- summaryBasis: two or three sentences, in the third person, stating the lead argument and briefly each other argument you nominated, without amounts; the system adds the amounts and the request.
+- claimAndResponse: the cardholder's claim as one short span copied exactly from the issuer's filing, with its file id and page, and one or two sentences answering it from the records, with citations.
+- sections: for each argument you nominated from the first list, and each supplementary argument you nominated that is not a time limit or early filing, one paragraph of two to five sentences stating what the records show, each fact followed by its citation. Do not restate the rule and do not conclude; the system adds both. Write no section for a time limit or early filing; the system writes those.
+In the letter content, write dates as YYYY-MM-DD and amounts with their currency, and you may state a value exactly as a cited record prints it — a delivery address, a tracking reference, a transaction hash. Never mention how the payment was authenticated, 3-D Secure, terms and conditions or refund policies, and never suggest the cardholder acted dishonestly; state a fraud claim only as the cardholder's own words in a section for the fraud supplementary argument. Never cite a page marked as confidential. Never write a field name.
+
+Outside the two summary sentences, the filing text of step 8 and the letter content of step 9, never write a date, an amount, an address, a name, a tracking number or any other identifier in any field except inside a quoted span. Each "fits" is one sentence; a rejection carries a sentence only when its reason is other. Return only the JSON object, in the shape given after the list.
+
+Reason code 13.1 — the merchant's permitted arguments: 13.1-G2, 13.1-G3, 13.1-G5, 13.1-G6, 13.1-G7, 13.1-G8, 13.1-G9 and 13.1-G10, in register order.
+
+How to read this list. Each argument gives the rulebook's words, then when to nominate it, the evidence that argues it most strongly, and when it does not fit. Nominate an argument whenever the merchant's records bear on it, even if the evidence is not of the strongest kind: the rules decide later whether it is enough, and a missed argument costs the merchant more than an extra one. Always quote the record you rely on. Reject an argument only when it does not fit this case, or when nothing in the records bears on it. Every argument is listed on every case, but several apply only to one kind of sale or complaint: a remote sale, an in-person sale, an airline ticket, a service booked for a later date, a crypto or NFT purchase; judge from the records whether this case is that kind. The rule's words govern the final decision; the lines below are deliberately broader, so that no argument is missed. The merchant's pack is often one file holding many kinds of record: read all of it.
+
+Terms used below.
+- Merchandise: goods the cardholder buys, usually physical.
+- A service: anything else the merchant provides. For example: travel and transport; accommodation and holidays; event and attraction entry; memberships and subscriptions; lessons and courses; gaming and betting accounts; repairs and appointments. Access over time, such as an account or a subscription, is a service, and so is food and drink served to be eaten or drunk on the premises. Whether a one-off digital download is merchandise or a service is not settled.
+- A future service: a service paid for at purchase and due on a later date. It remains a future service once that date has passed.
+- An agent: a merchant, such as a travel or ticket agency, that arranges a service another business provides.
+- One purchase can include merchandise and services. Each argument answers only its own part: proof the goods arrived does not answer a complaint about the service.
+
+[13.1-G2] GROUND · VISA-13.1-11.10.2.6
+Rule: The Cardholder no longer disputes the Transaction
+Nominate when: the merchant's records hold the cardholder's own written words saying the matter is resolved; that a refund, a replacement or the missing item reached them and they are content; or that they are withdrawing the dispute.
+Strongest evidence: a message from the cardholder, written after the dispute was raised, saying so in terms.
+Does not fit: the only records are the merchant's own notes, call logs or summaries, a refund or credit record, or the cardholder's complaint.
+
+[13.1-G3] GROUND · VISA-13.1-11.10.2.6
+Rule: The Cardholder or an authorized person received services at the agreed location or by the agreed
+date/time
+Nominate when: the records show the service used or attended, or the cardholder present where it was given — including a payment taken in person at the place of the service, such as a taxi's card terminal or a restaurant or venue bill; ticket or coupon details marked flown, used or redeemed; check-ins, entry scans, attendance, or log-ins and activity on the cardholder's account. Where the merchant is an agent — it arranges a service that another business provides — arranging the booking and issuing the ticket is its own service: records of the booking made and the ticket issued bear on this argument. An airline, hotel, venue or other business selling its own service is not an agent: for it, a booking made or a ticket issued is not a service received.
+Strongest evidence: a record the service itself made at the time of use — a boarding scan, a completed ride log, a hotel check-in, an entry or session record, a job sheet signed at the repair.
+Does not fit: the records show only goods sold, delivered or collected; the service was not used — a no-show or an unused booking, which may fit the future-services argument; the merchant cancelled it; or the purchase was of cryptocurrency or an NFT whose only service was buying and sending it, which is the crypto argument.
+
+[13.1-G5] GROUND · VISA-13.1-11.10.2.6
+Rule: For merchandise that was delivered, proof of delivery that contains the full delivery address
+(tracking with partial address is not permitted)
+Nominate when: a carrier's or the merchant's own delivery record shows the goods delivered — including one reproduced as a screenshot or exhibit inside a letter — even where that record shows only part of the address or none, provided the merchant's order or despatch record for the same order gives the delivery address. A signature, delivery photo or located delivery on the record is part of it.
+Strongest evidence: a delivery record marked delivered that itself shows the full delivery address, matching the address agreed for the order, with a signature or photo.
+Does not fit: nothing shows the goods delivered — only a despatch note, "shipped", "out for delivery", "attempted" or "returned to sender"; the records show delivery to an address other than the agreed one; or the only support is a letter or email saying the goods arrived, with no delivery record behind it.
+
+[13.1-G6] GROUND · VISA-13.1-11.10.2.6
+Rule: For Card-Absent Transactions where the merchandise was collected, pick up document including
+acknowledgment from Cardholder or authorized person (for example: signature, PIN, collection code)
+Nominate when: goods bought remotely — online, by phone or by post — were collected from a store, locker, depot or other collection point, and the collection record carries an acknowledgment by the person collecting, such as a signature, PIN, collection code, ID check or photo at collection.
+Strongest evidence: a click-and-collect or locker release record showing the signature or code entered.
+Does not fit: the goods were delivered to an address, which is the delivery argument; they were bought and taken away in person; or the records show no collection.
+
+[13.1-G7] GROUND · VISA-13.1-11.10.2.6
+Rule: For Transactions in a Card-Present Environment, certification that the Cardholder took the
+merchandise at time of sale
+Nominate when: the goods were sold in person with the card present, and the records hold the merchant's statement that the cardholder took them away at the time of sale, or at least the in-person till receipt for them.
+Strongest evidence: a signed merchant certification that the goods were handed over at the point of sale, with the till receipt.
+Does not fit: the sale was remote — online, by phone or by post; the records show the goods were to be delivered or collected later; or what was sold was food and drink served on the premises, which is a service.
+
+[13.1-G8] GROUND · VISA-13.1-11.10.2.6
+Rule: For an Airline Transaction, that the flight departed when the Cardholder is disputing the flight
+did not take place.
+Nominate when: the purchase is a flight, the complaint is — or may be — that the flight did not take place or was cancelled, and the records bear on whether that flight operated: a flight status, departure, operations or manifest record, or coupon details showing it flown.
+Strongest evidence: the airline's own departure or operations record for that flight number and date.
+Does not fit: the complaint is plainly something else — refused boarding, a missed flight, a cancelled booking or a wrong date; or the records show the flight did not operate, or only a replacement flight departed.
+
+[13.1-G9] GROUND · VISA-13.1-11.10.2.6
+Rule: For a Dispute related to future services, evidence to show that merchant did not cancel and
+services were available.
+Nominate when: the service was booked at purchase for a later date, and the merchant's records show the booking held open — confirmed, not cancelled by the merchant, still valid or bookable, or recorded as a no-show — with nothing showing it used. The date may be still ahead or already past. Nominate even where the issuer's form says the merchant cancelled, if the merchant's own records show the booking live.
+Strongest evidence: the merchant's booking or schedule record showing it active and uncancelled, read with a status record showing the flight, event or appointment went ahead or remains scheduled.
+Does not fit: the records show the service used, which is the services-received argument; they show the merchant cancelled, withdrew or refused it, or that it did not operate; or the only support is the merchant's general statement that it was available.
+
+[13.1-G10] GROUND · VISA-13.1-11.10.2.6
+Rule: For Transactions involving the acquisition of non-fiat currency (for example: cryptocurrency) or
+non-fungible token(s), evidence the non-fiat currency or non-fungible token(s) was successfully
+delivered to the destination wallet address supplied by the Cardholder at the time of the
+Transaction and one or both of the following:
+Nominate when: the purchase was of cryptocurrency, another non-fiat currency or an NFT, and the records bear on its delivery to a wallet the cardholder gave — a withdrawal or transfer record, an order record naming the destination wallet, a blockchain transaction hash, or a screenshot of the transfer — even where the hash or the address is missing.
+Strongest evidence: a transfer record showing both the destination wallet address the cardholder supplied and a blockchain transaction hash that can be looked up on a public explorer. The rule above is cut off; those two items are the list it introduces.
+Does not fit: the payment was an ordinary money transfer to a bank account or a person; the records show the assets were never sent out of an account held with the merchant; or the hash or address shown belongs to a different transfer.
+
+Supplementary arguments — preconditions. These show the dispute should not have been raised under this reason code at all. They supplement the arguments above: nominate one whenever the records show it, whether or not an argument above fits, and list only those you nominate. The time-limit arguments and early filing depend on the time-limits section: rely on the results shown there and never count days yourself.
+
+[13.1-G13] PRECONDITION · VISA-13.1-11.10.2.3
+Rule: A Transaction in which the Cardholder cancelled the merchandise or service before the expected
+delivery or service date (for example: the Cardholder purchased merchandise and subsequently
+cancelled with the Merchant due to buyer's remorse)
+Nominate when: the records show the cardholder, not the merchant, cancelled the order, booking or service, or asked the merchant to cancel it, before it was due to be delivered or provided — a cancellation request in the cardholder's own messages, the merchant's cancellation record naming the cardholder as the one who asked, or the issuer's form certifying it.
+Strongest evidence: the cardholder's own written cancellation request, made before the due date, with the merchant's record of it.
+Does not fit: the merchant cancelled; the cancellation came after the goods or service were due; or nothing in the records mentions a cancellation.
+
+[13.1-G14] PRECONDITION · VISA-13.1-11.10.2.3
+Rule: A Transaction in which merchandise is being held by the Cardholder's country's customs agency
+Nominate when: a carrier or tracking record shows the goods held by customs, or awaiting customs clearance or duties, in the country they were being delivered to.
+Strongest evidence: the carrier's tracking record showing the goods held at customs in the destination country, with the destination address.
+Does not fit: the goods are held in the merchant's own country or elsewhere in transit, which does not help the merchant; or they have since been released and delivered.
+
+[13.1-G15] PRECONDITION · VISA-13.1-11.10.2.3
+Rule: A Transaction that the Cardholder states is fraudulent
+Nominate when: the issuer's filing or the cardholder's own words say the cardholder did not make or authorise the payment, or call it fraud or unauthorised use of their card — so the dispute belongs under a fraud reason code, not this one.
+Strongest evidence: the words in the dispute filing saying the cardholder did not make or authorise the transaction.
+Does not fit: the cardholder made the purchase and complains only that it was not received; or only the merchant alleges fraud by the cardholder, which is an other argument.
+
+[13.1-G16] PRECONDITION · VISA-13.1-11.10.2.3
+Rule: A Dispute regarding the quality of merchandise or service provided
+Nominate when: the issuer's filing or the cardholder's own words show the goods or service were received, and the complaint is that they were faulty, damaged, not as described, misrepresented or unsatisfactory — so the dispute belongs under a quality or not-as-described reason code, not this one.
+Strongest evidence: the cardholder's or issuer's words describing a problem with what was received.
+Does not fit: the complaint is that nothing, or only part, was received; or only the merchant describes a quality issue.
+
+[13.1-G20] PRECONDITION · VISA-13.1-11.10.2.3
+Rule: For a Transaction involving the acquisition non-fiat currency (for example: cryptocurrency) or
+purchase of non-fungible token(s), in which the Cardholder can no longer access the non-fiat
+currency or non-fungible token(s) after it was successfully delivered to the destination wallet
+address supplied by the Cardholder at the time of the Transaction
+Nominate when: the purchase was of cryptocurrency or an NFT, the records bear on its delivery to the wallet the cardholder gave, and the complaint is — or may be — that the cardholder lost access to it afterwards, for example a wallet or account later blocked, emptied or taken over.
+Strongest evidence: a delivery record to the cardholder's wallet together with the filing's words that access was lost after delivery.
+Does not fit: the complaint is that the crypto or NFT was never delivered; or the purchase was not crypto or an NFT.
+
+[13.1-G28] PRECONDITION · VISA-13.1-11.10.2.2
+Rule: Before the Issuer may initiate a Dispute, the Cardholder must attempt to resolve the Dispute with
+the Merchant, the Merchant's liquidator, Ramp Provider, or its Conversion Affiliate as applicable.1
+Nominate when: the records suggest the cardholder did not contact the merchant about the problem before disputing — the merchant's contact records or statement showing no complaint was received, or the issuer's form saying no attempt was made — unless the card is a commercial card.
+Strongest evidence: the issuer's form stating no attempt was made, or the merchant's customer-contact records for this purchase showing no contact before the dispute.
+Does not fit: the records show the cardholder did contact the merchant about the problem before disputing.
+
+[13.1-G38] PRECONDITION · VISA-13.1-11.10.2.5
+Rule: A detailed description of the merchandise or services purchased.1 This description must contain
+additional information beyond the data required in the Clearing Record (for example: the MCC of
+the Merchant is 5651 - Family Clothing Stores and the description states a pair of blue jeans).
+Nominate when: the issuer's description of what was bought says no more than the payment record already shows — only the merchant's name, the amount, a date, or a general word such as goods, services or not received — or describes something other than what the merchant sold.
+Strongest evidence: the issuer's description, quoted, showing it names nothing specific about the purchase, or names something the merchant did not sell.
+Does not fit: the description names what was bought — the item, service or booking — in more detail than the payment record carries.
+
+[13.1-G22] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: Not to exceed 540 calendar days from the Transaction Processing Date
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-G25] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: For MCC 4722 (Travel Agencies and Tour Operators), and ticket agencies that sell third-party event
+tickets, wait 30 calendar days1 from the date the service provider cancelled the service.2
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-G32] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: 120 calendar days from the Transaction Processing Date
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-G33] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: 120 calendar days from the last date that the Cardholder expected to receive the merchandise or
+services3,4
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-G34] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: Wait 15 calendar days1,2 from any one of the following: – The Transaction Date, if the date the services were expected or the delivery date for the merchandise is not specified
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-G36] PRECONDITION · VISA-13.1-11.10.2.4
+Rule: Wait 15 calendar days1,2 from any one of the following: – The date the Merchant canceled the goods or services
+Nominate when: the time-limits section shows this limit as MET. Rely on the figures shown there; never count days yourself.
+Strongest evidence: the system's day count, cited by its bracketed field name.
+Does not fit: the time-limits section shows it as NOT MET or NOT YET KNOWN.
+
+[13.1-EF] PRECONDITION · no register row
+Rule: No register rule yet. For a purchase to be delivered at a later date, Visa requires an explanation of why the Dispute was initiated before the expected delivery date.
+Nominate when: the time-limits section shows early filing as MET — raised before the cardholder's own expected date, with the merchant not shown as bankrupt — and the issuer's filing gives no reason for disputing early.
+Strongest evidence: the system's day count, cited by its bracketed field name, with the issuer's stated expected date.
+Does not fit: the time-limits section shows early filing as NOT MET or NOT YET KNOWN; or the issuer's filing explains why the dispute was raised early.
+
+Return exactly this JSON object:
+{
+  "cardholderSays": {"sentence": "<one sentence>", "documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>},
+  "merchantRecordsShow": {"sentence": "<one sentence>", "citations": [{"documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>}]},
+  "otherPurchasesInPack": false,
+  "nominated": [
+    {"code": "<a code from the first list>",
+     "strength": "STRONGEST | PARTIAL",
+     "fits": "<one sentence>",
+     "explanation": "<three to six sentences of filing text, as step 8 describes>",
+     "note": "<one sentence summarising the explanation>",
+     "evidence": [
+       {"source": "MERCHANT_DOCUMENT", "documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>, "quote": "<span copied exactly from that page>"},
+       {"source": "ISSUER_DOCUMENT", "documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>, "quote": "<span copied exactly from that page>"},
+       {"source": "CASE_RECORD", "field": "<a field name shown in brackets in the record or the time limits, written without the brackets, never its value>"}
+     ]}
+  ],
+  "notNominated": [
+    {"code": "<a code from the first list>",
+     "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE | RECORD_SHOWS_CONTRARY | EVIDENCE_ABSENT_FROM_PACK | NO_RECORD_OF_IT"},
+    {"code": "<a code from the first list>",
+     "why": "OTHER",
+     "reason": "<one sentence>"}
+  ],
+  "supplementary": [
+    {"code": "<a code from the second list>",
+     "strength": "STRONGEST | PARTIAL",
+     "fits": "<one sentence>",
+     "explanation": "<one or two sentences beginning \"In addition,\", as step 8 describes>",
+     "evidence": ["<items of the same three forms as in nominated>"]}
+  ],
+  "otherArguments": [
+    {"kind": "REFUND_OR_REVERSAL_ISSUED | SERVICE_NOT_YET_DUE | CARDHOLDER_CANCELLED | DISPUTE_WITH_THIRD_PARTY | TERMS_RESTRICT_REFUND_OR_CANCELLATION | PAYMENT_AUTHENTICATED | CARDHOLDER_DID_NOT_CONTACT_MERCHANT | MERCHANT_ALLEGES_FRAUD_OR_SCAM",
+     "documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>, "quote": "<span copied exactly from that page>"},
+    {"kind": "OTHER",
+     "documentRef": "<the file's citation id, such as M1 or I1>", "page": <n>, "quote": "<span copied exactly from that page>",
+     "reason": "<one sentence>"}
+  ],
+  "letter": {
+    "summaryBasis": "<two or three sentences, as step 9 describes>",
+    "claimAndResponse": {"documentRef": "<the issuer file's citation id, such as I1>", "page": <n>, "claimQuote": "<span copied exactly from that page>", "response": "<one or two sentences with citations such as [M1 p5]>"},
+    "sections": [
+      {"code": "<a code you nominated>", "facts": "<two to five sentences, each fact followed by its citation such as [M1 p5]>"}
+    ]
+  },
+  "unsettled": false
+}
+The four rejection reasons in step 4 correspond, in order, to OUTSIDE_THE_SHAPE_OF_THIS_CASE, RECORD_SHOWS_CONTRARY, EVIDENCE_ABSENT_FROM_PACK and NO_RECORD_OF_IT. A notNominated entry carries a reason only when its why is OTHER; every other entry has exactly two members, code and why. The kinds in step 7 correspond, in order, to REFUND_OR_REVERSAL_ISSUED, SERVICE_NOT_YET_DUE, CARDHOLDER_CANCELLED, DISPUTE_WITH_THIRD_PARTY, TERMS_RESTRICT_REFUND_OR_CANCELLATION, PAYMENT_AUTHENTICATED, CARDHOLDER_DID_NOT_CONTACT_MERCHANT, MERCHANT_ALLEGES_FRAUD_OR_SCAM and OTHER; an otherArguments entry carries a reason only when its kind is OTHER. strength is STRONGEST when the evidence is of the kind the "Strongest evidence" line describes and is tied to this purchase, and PARTIAL otherwise — including where the pack covers other purchases and the record cannot be matched to this one. otherPurchasesInPack is true when the merchant's pack also covers orders, bookings, transfers or cases other than this purchase. supplementary and otherArguments may be empty. Every code in the first list appears exactly once, in nominated or in notNominated; a code from the second list appears at most once, in supplementary. Every nominated entry carries fits, explanation and note; every supplementary entry carries fits and explanation. Write every code exactly as the list writes it, with its reason-code prefix, such as 13.1-G5. letter is required whenever nominated or supplementary is not empty, and may be omitted otherwise.
+
+THE TRANSACTION AND THE DISPUTE (from the payment and dispute records)
+Use these to match the merchant's records to this purchase, and to see how and when it was made. Only the fields whose names are shown in brackets may be cited as evidence — give the name without the brackets, and never its value; the others are there to match records to this purchase. Where the disputed amount is less than the transaction amount, only part of the purchase is in dispute.
+
+The transaction
+- Merchant name on the payment [merchantDescriptor]: BSH HOME APPS LTD
+- Merchant country [transaction.merchantCountry]: GB
+- Merchant category code [transaction.mcc]: 5722
+- How the card was used [transaction.channel]: CARD_ABSENT — not present: online, phone or post
+- Entry mode [transaction.entryMode]: ECOM — online, card not present
+- Card present or absent [transaction.posEnvironment]: CARD_ABSENT
+- Sale date: 2025-06-03
+- Processing date: 2025-06-05
+- Transaction amount: 25.46 GBP
+- Acquirer reference number: 74838565156920021001348
+- Authorisation code: 003193
+
+The dispute
+- Date the dispute was raised: 2025-08-01
+- Disputed amount: 25.46 GBP
+
+Other fields
+- transaction.isCardPresent: false
+
+TIME LIMITS AND WAITING PERIODS (calculated by the system from the dates in the record — rely on these results and never count days yourself; the exception that lifts a waiting period where waiting would take the dispute past its own time limit is not applied here)
+- [13.1-G32] raised beyond the time limit counted from the processing date
+  Days from processing date to dispute [dispute.daysAfterTransactionProcessing]: 57 (from 2025-06-05 to 2025-08-01)
+  Limit: 121 or more days · Expected date given: yes → NOT MET
+- [13.1-G33] raised beyond the time limit counted from the expected receipt date
+  Days from expected receipt date to dispute [dispute.daysAfterExpectedReceiptDate]: 42 (from 2025-06-20 to 2025-08-01)
+  Limit: 121 or more days · Expected date given: yes → NOT MET
+- [13.1-G22] raised beyond the outer time limit
+  Days from processing date to dispute [dispute.daysAfterTransactionProcessing]: 57 (from 2025-06-05 to 2025-08-01)
+  Limit: 541 or more days · Expected date given: yes → NOT MET
+- [13.1-G34] raised within the waiting period counted from the transaction date
+  Days from transaction date to dispute [dispute.daysAfterTransactionDate]: 59 (from 2025-06-03 to 2025-08-01)
+  Limit: 14 or fewer days · Expected date given: yes · Merchant bankrupt or in liquidation (issuer's form): no → NOT MET
+- [13.1-G36] raised within the waiting period counted from the merchant's cancellation
+  Days from merchant's cancellation to dispute [dispute.daysAfterServiceCancellation]: not yet known
+  Limit: 14 or fewer days · Travel or ticket agency: not yet known · Merchant bankrupt or in liquidation (issuer's form): no → NOT MET
+- [13.1-G25] raised within the waiting period for travel and ticket agencies
+  Days from service provider's cancellation to dispute [dispute.daysAfterServiceCancellation]: not yet known
+  Limit: 29 or fewer days · Travel or ticket agency: not yet known · Merchant bankrupt or in liquidation (issuer's form): no → NOT MET
+- [13.1-EF] raised before the cardholder's expected date
+  Days from expected receipt date to dispute [dispute.daysAfterExpectedReceiptDate]: 42 (from 2025-06-20 to 2025-08-01)
+  Limit: below 0 days (raised before the expected date) · Merchant bankrupt or in liquidation (issuer's form): no → NOT MET
+
+THE ISSUER'S DOCUMENTS — 1 file (I1), 2 pages.
+These are the issuer's dispute filing: the dispute form and questionnaire, and sometimes the cardholder's own letter or attachments. They tell you what the cardholder claims and what the issuer certifies. They are the claim, not evidence of what the merchant did: an issuer's "Yes" or "No" is its own statement, and the merchant's records may contradict it. A description may be brief, generic or templated; a thin description does not by itself rule any argument out. Each file has a short citation id in its header; cite a file by that id.
+
+=== File I1: issuer file 1 of 1, 2 pages ===
+--- DOCUMENT TEXT ---
+[page 1 of 2]
+Visa Resolve Online
+Consumer Dispute Questionnaire
+VROL Case Number 5465392938
+Member Case Number:
+Transaction Information
+Card/Acct #:
+4111-11xx-xxxx-1111
+Tran Type:
+Sale
+Issuer:
+Lloyds Bank Plc
+Network:
+VISA
+Tran Date:
+06/03/2025
+CH Name:
+Tran ID:
+48515436995857501
+Processing Date:
+06/05/2025
+Acquirer:
+WorldPay (UK) Limited
+ARN:
+74838565156920021001348
+Tran Amount:
+25.46  GBP
+Merchant:
+BSH HOME APPS LTD
+Retrieval Ref#:
+515678920021
+Jurisdiction:
+DOMESTIC-GB
+Location:
+LONDON,GB
+Dispute Information
+This dispute is due to:
+Merchandise/Services Not Received
+Dispute Amount:
+25.46  GBP
+Dispute Category/Condition:
+13.1 Consumer - Merchandise/Services Not Received
+Financial Processing Date:
+08/01/2025
+Certification/Elaboration
+What was not received?
+Merchandise.
+Is the purchase a third-party gift card without an expiration date, where the merchandise or services were not provided by the
+No
+third party due to insolvency or bankruptcy?
+Provide detailed description of what was purchased and an explanation of the dispute:
+Our customer purchased: I paid for spare part but I didn't not received anything yet .. They were not provided a delivery date howev-
+er at least 15 days have passed since the transaction date and our cardholder has not received their goods. The agreed delivery ad-
+dress is: 123 Worlday Street, Sample City, AB12 3CD
+Did merchant cancel the merchandise?
+No
+Is merchant in bankruptcy/liquidation?
+No
+What was the last expected receipt date?
+06/20/2025
+What was the last expected receipt time?
+00:00
+Did the cardholder cancel prior to the expected date?
+No
+Did the cardholder attempt to resolve the dispute with the merchant?
+Yes
+Was the merchandise delivered late?
+No
+Was the merchandise delivered to the incorrect location?
+No
+Comments and Documents
+Comments:
+Documents:
+
+
+[page 2 of 2]
+Issuer Contact Information
+Name:
+LloydsBankingGroup
+Phone:
++44 345 739 4959
+Email:
+GRPC41047@lloydsbanking.com
+By completing this form, you agree that the information captured is correct to the best of your knowledge.  Any available
+documentation which supports this dispute should be attached.
+
+=== End of file I1 ===
+
+WHAT THE ISSUER'S FORM ANSWERS (read from the form's fields; these are the issuer's own statements, not evidence of what the merchant did — the form itself is above)
+- The cardholder tried to resolve the dispute with the merchant before the dispute was raised: yes
+- The last date the cardholder expected to receive the goods or services: 2025-06-20
+- The issuer certifies the cardholder cancelled before the expected date: no
+- The issuer certifies the merchant cancelled: no
+- The issuer certifies the merchant is in bankruptcy or liquidation: no
+
+THE MERCHANT'S DOCUMENTS — 1 file (M1), 2 pages.
+A merchant's pack often mixes records made at the time (orders, carrier and system pages, receipts, logs, messages), the merchant's own account written for this dispute, terms and conditions, and sometimes a copy of the issuer's form. Terms and conditions describe the merchant's policy, not what happened on this purchase. Screenshots and photos appear below only as the text they carry: where a page seems to show an image whose content is not in the text, do not treat what you cannot read as evidence either way. Each file has a short citation id in its header; cite a file by that id.
+
+=== File M1: merchant file 1 of 1, 2 pages ===
+--- DOCUMENT TEXT ---
+[page 1 of 2]
+8/8/25, 7:13 PM
+wpgbackoffice.worldpay.local/accounting/shopperGuarantee/disputeManagement.html?journalId=320020430386898&document...
+SHOW FULL CARD NUMBER
+---------- Reference -----------
+Card dispute with CardNumber : 411111******1111
+AccountCode at Acquirer : ABCDE12345
+Acquirer Reference : PA5JPVDTD7V / 74838565156920021001348
+---------- Cardholder Details ----------
+Cardholder name : Mrs JBloggs
+Card number : 4111********1111
+Expiry date : 00-2828
+---------- Transaction Details ----------
+Authorisation Code : 003193
+AVS result : NOT SUPPLIED BY SHOPPER
+CVC result : APPROVED
+Capture amount : GBP 25.46
+Capture date : Wed, Jun 4, 2025
+IP address : 123.456.789.01
+---------- Merchant Details ----------
+Merchant Name : BSHGBCSCC
+Country : GB
+Shop URL : http://www.bshgb.com
+---------- Dispute background ----------
+Part was despatched 04.06.2025 on invoice 5030418923 signed for 05.06.2025
+https://wpgbackoffice.worldpay.local/accounting/shopperGuarantee/disputeManagement.html?journalId=320020430386898&documentSequence...
+1/1
+
+
+[page 2 of 2]
+https://wpgbackoffice.worldpay.local/accounting/shopperGuarantee/disputeManagement.html?journalId=320020430386898&documentSequence...
+1/1
+Round:   FX105
+Depot: 605
+Con: 625700433
+Pickup
+04/06/2025
+Service:  Express
+Sender Reference:  8302823578
+Sender:
+BSH Home Appliances Ltd
+Grand Union House
+Old Wolverton Road
+MK12 5PT   MILTON KEYNES
+Contact: Neil
+Tel: 011234567
+Receiver:
+Jane Bloggs
+123 Worldpay Street
+AB12 3CD    Sample City
+Contact:
+Tel:
+Weight(kg):
+1.210
+Volume(m3):
+.001
+Option1:
+Option2:
+Option3:
+Option4:
+COD Amount:
+COD Type:
+Declared Pieces:  1
+Signed by:
+J.Bloggs
+Date and Time:     05/06/2025 10:22
+Delivered Pieces:  1
+
+=== End of file M1 ===
+
+Answer now: follow the steps above and return only the JSON object, in the shape given above.
