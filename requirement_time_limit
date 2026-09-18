@@ -1,0 +1,8 @@
+"compare_op","day_limit","conditions","filing_sentence","id","requirement_id","day_count_fact_key_id","limit_text"
+"GE",541,"{expectedDate}","In addition, the dispute was raised {n} calendar days after the transaction processing date, beyond the 540-day outer time limit for this reason code.",15,11,9,"541 or more days"
+"LE",29,"{mccIs4722,cancellationKnown,bankruptNotYes}","In addition, the dispute was raised {n} calendar days after the service provider cancelled, within the 30-day waiting period that applies to travel and ticket agencies.",16,14,7,"29 or fewer days"
+"GE",121,"{noExpectedDate}","In addition, the dispute was raised {n} calendar days after the transaction processing date, beyond the 120-day time limit for this reason code.",17,12,9,"121 or more days"
+"GE",121,"{expectedDate}","In addition, the dispute was raised {n} calendar days after the last date the cardholder expected to receive the merchandise or services, beyond the 120-day time limit for this reason code.",18,13,5,"121 or more days"
+"LE",14,"{noExpectedDate,bankruptNotYes}","In addition, the dispute was raised {n} calendar days after the transaction date, within the 15-day waiting period that applies where no expected date was given.",19,15,8,"14 or fewer days"
+"LE",14,"{cancellationKnown,mccNot4722,bankruptNotYes}","In addition, the dispute was raised {n} calendar days after the merchant cancelled, within the required 15-day waiting period.",20,17,7,"14 or fewer days"
+"LT",0,"{bankruptNotYes}","In addition, the dispute was raised {n} calendar days before the date the cardholder expected to receive the merchandise or services, and the issuer's filing gives no reason for disputing early.",21,18,5,"below 0 days (raised before the expected date)"

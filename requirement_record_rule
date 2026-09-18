@@ -1,0 +1,6 @@
+"rule_kind","rule_params","amount_scope","filing_sentence","id","requirement_id"
+"MCC_IN","{6011}","FULL","In addition, the transaction was an ATM cash disbursement (merchant category code {mcc}), to which Dispute Condition 13.1 does not apply.",11,1
+"MCC_IN","{5542}","FULL","In addition, the transaction was an automated fuel dispenser transaction (merchant category code {mcc}), to which Dispute Condition 13.1 does not apply.",12,5
+"CASH_BACK_PRESENT","{}","CASH_BACK_PORTION","In addition, {cashBackAmount} of the transaction was a cash-back disbursement, which Dispute Condition 13.1 excludes.",13,4
+"MISSING_CERTIFICATION","{}","FULL","In addition, the issuer's filing does not certify {missingCertifications}, which the dispute requires.",14,21
+"REPEAT_DISPUTES","{3,30}","FULL","In addition, the cardholder has disputed {count} transactions at this merchant on the same card within 30 calendar days, and the filing includes no cardholder letter.",15,24
