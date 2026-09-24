@@ -1,0 +1,145 @@
+{
+  "outcome": "USABLE",
+  "cardholderSays": {
+    "sentence": "The cardholder says they paid GBP 25.46 on 2025-06-03 for a spare part but had not received anything by the expected receipt date of 2025-06-20.",
+    "documentRef": "POCVISA13117/issuer/13_1_PA5JPVDTD7Vissuer.pdf",
+    "page": 1,
+    "citedAs": "I1"
+  },
+  "merchantRecordsShow": {
+    "sentence": "The merchant's records say a spare part was despatched on 2025-06-04 and show a carrier delivery record with delivery and signature on 2025-06-05.",
+    "citations": [
+      {
+        "documentRef": "POCVISA13117/merchant/13_1_PA5JPVDTD7Vmerchant.pdf",
+        "page": 1,
+        "citedAs": "M1"
+      },
+      {
+        "documentRef": "POCVISA13117/merchant/13_1_PA5JPVDTD7Vmerchant.pdf",
+        "page": 2,
+        "citedAs": "M1"
+      }
+    ]
+  },
+  "otherPurchasesInPack": false,
+  "nominated": [
+    {
+      "code": "13.1-G5",
+      "strength": "STRONG",
+      "fits": "The pack contains a delivery record for the goods with delivery, a full receiver address, delivered pieces and a signature, and nothing in the merchant records contradicts delivery.",
+      "explanation": "The merchant contests the dispute because, for merchandise that was delivered, there is proof of delivery containing the full delivery address. The merchant's delivery record shows the parcel was delivered to the receiver address and signed for, with one piece delivered, in the carrier record at merchant document, page 2. The merchant's dispute background also states that the part was despatched and signed for, in the merchant document, page 1. These records support that the merchandise was delivered rather than not received.",
+      "note": "The merchant's records show the spare part was despatched and the carrier record shows delivery with a full address and signature.",
+      "evidence": [
+        {
+          "source": "MERCHANT_DOCUMENT",
+          "documentRef": "POCVISA13117/merchant/13_1_PA5JPVDTD7Vmerchant.pdf",
+          "page": 2,
+          "quote": "Receiver:\nJane Bloggs\n123 Worldpay Street\nAB12 3CD    Sample City\nContact:\nTel:\nWeight(kg):\n1.210\nVolume(m3):\n.001\nOption1:\nOption2:\nOption3:\nOption4:\nCOD Amount:\nCOD Type:\nDeclared Pieces:  1\nSigned by:\nJ.Bloggs\nDate and Time:     05/06/2025 10:22\nDelivered Pieces:  1",
+          "citedAs": "M1"
+        },
+        {
+          "source": "MERCHANT_DOCUMENT",
+          "documentRef": "POCVISA13117/merchant/13_1_PA5JPVDTD7Vmerchant.pdf",
+          "page": 1,
+          "quote": "Part was despatched 04.06.2025 on invoice 5030418923 signed for 05.06.2025",
+          "citedAs": "M1"
+        }
+      ]
+    }
+  ],
+  "notNominated": [
+    {
+      "code": "13.1-G1",
+      "why": "NO_RECORD_OF_IT"
+    },
+    {
+      "code": "13.1-G2",
+      "why": "NO_RECORD_OF_IT"
+    },
+    {
+      "code": "13.1-G3",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G6",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G7",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G8",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G9",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    },
+    {
+      "code": "13.1-G10",
+      "why": "OUTSIDE_THE_SHAPE_OF_THIS_CASE"
+    }
+  ],
+  "supplementary": [],
+  "otherArguments": [],
+  "letter": {
+    "summaryBasis": "The merchant relies on proof of delivery for the merchandise. The delivery record shows the parcel was delivered to the receiver address and signed for, and the merchant's record states the spare part was despatched and signed for.",
+    "claimAndResponse": {
+      "documentRef": "I1",
+      "page": 1,
+      "claimQuote": "I paid for spare part but I didn't not received anything yet",
+      "response": "The merchant's record states the spare part was despatched and signed for on 2025-06-05 [M1 p1]. The carrier delivery record shows one piece delivered to the receiver address and signed for on 2025-06-05 [M1 p2]."
+    },
+    "sections": [
+      {
+        "code": "13.1-G5",
+        "facts": "The merchant's dispute background states that the part was despatched on 2025-06-04 and signed for on 2025-06-05 [M1 p1]. The delivery record shows the receiver as Jane Bloggs, 123 Worldpay Street, AB12 3CD Sample City [M1 p2]. The same delivery record shows “Signed by: J.Bloggs,” “Date and Time: 05/06/2025 10:22,” and “Delivered Pieces: 1” [M1 p2]."
+      }
+    ]
+  },
+  "unsettled": false,
+  "checks": {
+    "droppedSupplementary": [],
+    "timeLimitCitationsAdded": [],
+    "timeLimitFigureMismatch": [],
+    "recordRuleCitationsAdded": [],
+    "supplementaryMissing": false,
+    "droppedEvidence": [],
+    "droppedNominations": [],
+    "droppedOtherArguments": [],
+    "otherArgumentsMissing": false,
+    "citationsResolved": 0,
+    "unresolvedSummaryCitations": [],
+    "codesNormalised": [],
+    "kindsNormalised": [],
+    "summaryPersonalData": [],
+    "summaryNonIsoDates": [],
+    "filingTextFlags": [],
+    "droppedFilingText": [],
+    "strongestWithOtherPurchases": [],
+    "otherArgumentsRelocated": [],
+    "letterFindings": [],
+    "rejections": [],
+    "valueShapedHits": []
+  },
+  "payloadDigest": "sha256:cc3322ce9016ce00e07800155be18de39b06056011e8255ab461c4b6f6d6865c",
+  "recordFieldsShown": [
+    "merchantDescriptor",
+    "transaction.merchantCountry",
+    "transaction.mcc",
+    "transaction.channel",
+    "transaction.entryMode",
+    "transaction.posEnvironment",
+    "dispute.daysAfterTransactionProcessing",
+    "dispute.daysAfterExpectedReceiptDate",
+    "dispute.daysAfterTransactionDate",
+    "dispute.daysAfterServiceCancellation",
+    "issuer.missingCertifications",
+    "dispute.repeatCountSameMerchant30d"
+  ],
+  "citationIds": {
+    "M1": "POCVISA13117/merchant/13_1_PA5JPVDTD7Vmerchant.pdf",
+    "I1": "POCVISA13117/issuer/13_1_PA5JPVDTD7Vissuer.pdf"
+  }
+}
