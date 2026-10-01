@@ -1,0 +1,49 @@
+{
+  "caseNumber":        "POCVISA13117",   // platform case number, varchar(15)
+  "actionSequence":    "01",             // varchar(2)
+  "platform":          "NAP",            // NAP | CORE: region only
+  "network":           "VISA",
+  "reasonCode":        "13.1",
+  "networkCaseNumber": "…",
+  "arn":               "…",              // the purchase's ARN
+  "issuerName":        "…",              // letter's To
+  "acquirerName":      "…",
+
+  "merchant": {
+    "name":       "…",
+    "descriptor": "…",                   // name on the payment
+    "country":    "GB"
+  },
+
+  "transaction": {
+    "date":              "2026-05-02",
+    "processingDate":    "2026-05-03",
+    "amount":            25.46,
+    "currency":          "GBP",
+    "authorisationCode": "…",
+    "mcc":               "5942",
+    "cashBackAmount":    null,           // null = none on record; never 0
+    "cardLastFour":      "1234",
+    "motoIndicator":     "Y",            // raw code, same for all platforms
+    "entryMode":         "81",           // raw code, same for all platforms
+    "cardProductType":   null,           // optional raw code; shown to the model when present
+
+    "credits": [                         // [] = searched, none; omitted = not searched
+      { "arn": "…", "date": "2026-06-14", "amount": 25.46, "currency": "GBP" }
+    ],
+    "reversals": [                       // [] = searched, none; omitted = not searched
+      { "arn": "…", "date": "2026-05-04", "amount": 25.46, "currency": "GBP" }
+    ]
+  },
+
+  "dispute": {
+    "reportedDate":   "2026-06-10",
+    "disputedAmount": 25.46,
+    "currency":       "GBP"
+  },
+
+  "documents": [                         // llm service fetches each from S3
+    { "documentId": "…", "side": "ISSUER" },
+    { "documentId": "…", "side": "MERCHANT" }
+  ]
+}
