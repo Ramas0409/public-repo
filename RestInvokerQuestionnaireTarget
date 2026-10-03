@@ -1,0 +1,66 @@
+// OFFICE FILE - written in the POC for Ram to copy, 2026-10-03. Not compiled here (the POC has no RestInvoker).
+// Copy to the office as  service/RestInvokerQuestionnaireTarget.java  and remove these comment lines.
+// It is the office's saver: the ONLY questionnaire class that differs from the POC. Do not copy the POC's
+// LocalQuestionnaireStandIn, QuestionnaireServiceClient or DisputesQuestionnaireStore - Spring must find exactly
+// one class implementing QuestionnaireTarget.
+package com.wp.wdp.chargeback.auto.response.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.wp.wdp.chargeback.auto.response.model.CaseRow;
+import com.wp.wdp.chargeback.auto.response.request.UpdateQuestionnaireDocumentRequest;
+import com.wp.wdp.chargeback.auto.response.request.VisaQstnnairCollabReprRequest;
+import com.wp.wdp.chargeback.auto.response.response.VisaQstnnairCollabReprResponse;
+import com.wp.wdp.chargeback.auto.response.restclient.RestInvoker;
+
+import lombok.extern.slf4j.Slf4j;
+
+/** The questionnaire saved through the questionnaire service's API, and its document names through document management. */
+@Component
+@Slf4j
+public class RestInvokerQuestionnaireTarget implements QuestionnaireTarget {
+    private final RestInvoker restInvoker;
+
+    public RestInvokerQuestionnaireTarget(RestInvoker restInvoker) {
+        this.restInvoker = restInvoker;
+    }
+
+    /** The POST that was in ClassifierQuestionnaire.buildQuestionarie. */
+    @Override
+    public Long save(CaseRow row, VisaQstnnairCollabReprRequest body) {
+        try {
+            VisaQstnnairCollabReprResponse response = restInvoker.postVisaQuestionarieCollabRepresentment(
+                    body, row.getCaseNumber(), row.getActionSequence(), row.getAcquiringPlatform());
+            return response == null || response.getQstnnairId() == null ? null
+                    : Long.valueOf(response.getQstnnairId());
+        } catch (RuntimeException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            // RestInvoker declares a checked Exception; ClassifierQuestionnaire records a RuntimeException and carries on
+            throw new IllegalStateException("the questionnaire was not saved: " + exception.getMessage(), exception);
+        }
+    }
+
+    /** The call that was in ClassifierQuestionnaire.updateQuestionarieDocumentRef. */
+    @Override
+    public void updateDocumentNames(CaseRow row, List<String> documentNames, String userId) {
+        UpdateQuestionnaireDocumentRequest request = UpdateQuestionnaireDocumentRequest.builder()
+                .documents(documentNames)
+                .notifyBRQueue(true)
+                .ownershipUpdate(false)
+                .userId(userId)
+                .build();
+        log.info("Update questionnaire document request: {}", request);
+        try {
+            restInvoker.updateQuestionnaireDocument(request, row.getCaseNumber(), row.getActionSequence(),
+                    row.getAcquiringPlatform());
+        } catch (RuntimeException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new IllegalStateException("the questionnaire's document names were not updated: "
+                    + exception.getMessage(), exception);
+        }
+    }
+}
