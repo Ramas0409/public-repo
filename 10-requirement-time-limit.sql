@@ -1,0 +1,42 @@
+-- Office step 10: requirement_time_limit as it stands after CL-148 and CL-151 (POC db/V38, V39, db/V2__seed.sql).
+-- The conditions CHECK admits the ten tokens (four Europe tokens joined; mccIs4722 / mccNot4722 are now
+-- mccIsAgency / mccNotAgency), and the 10 rows - G32, G33, G22, G34, G36, G25, G42 and the Europe rows G27, G23,
+-- G26 - are rewritten whole, as the seed does. Needs steps 7 and 9 first. Safe to run again.
+
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS wdp_ai.requirement_time_limit_bak_20261006 AS SELECT * FROM wdp_ai.requirement_time_limit;
+
+ALTER TABLE wdp_ai.requirement_time_limit DROP CONSTRAINT IF EXISTS requirement_time_limit_conditions_check;
+ALTER TABLE wdp_ai.requirement_time_limit ADD CONSTRAINT requirement_time_limit_conditions_check
+    CHECK (conditions <@ ARRAY[
+        'expectedDate', 'noExpectedDate', 'bankruptNotYes', 'cancellationKnown', 'mccIsAgency', 'mccNotAgency',
+        'coveredByScheme', 'coveredNotYes', 'schemeInsufficientNotYes', 'notBondedInsolvency'
+    ]::text[]);
+
+DELETE FROM wdp_ai.requirement_time_limit
+ WHERE requirement_id IN (SELECT id FROM wdp_ai.requirement WHERE reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1'));
+
+-- the time-limit rules (§18): one row per TIME_LIMIT argument; absence means not a time limit
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G22'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterTransactionProcessing'), 'GE', 541, ARRAY['expectedDate']::text[], '541 or more days', 'In addition, the dispute was raised {n} calendar days after the transaction processing date, beyond the 540-day outer time limit for this reason code.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G25'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterServiceCancellation'), 'LE', 29, ARRAY['mccIsAgency','cancellationKnown','bankruptNotYes']::text[], '29 or fewer days', 'In addition, the dispute was raised {n} calendar days after the service provider cancelled, within the 30-day waiting period that applies to travel and ticket agencies.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G26'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterServiceCancellation'), 'LE', 29, ARRAY['mccIsAgency','cancellationKnown','notBondedInsolvency']::text[], '29 or fewer days', 'In addition, the dispute was raised {n} calendar days after the merchant cancelled, within the 30-day waiting period that applies to travel and ticket agencies.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G32'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterTransactionProcessing'), 'GE', 121, ARRAY['noExpectedDate','coveredNotYes']::text[], '121 or more days', 'In addition, the dispute was raised {n} calendar days after the transaction processing date, beyond the 120-day time limit for this reason code.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G33'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterExpectedReceiptDate'), 'GE', 121, ARRAY['expectedDate','coveredNotYes']::text[], '121 or more days', 'In addition, the dispute was raised {n} calendar days after the last date the cardholder expected to receive the merchandise or services, beyond the 120-day time limit for this reason code.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G23'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterBondingLetterOrAdvice'), 'GE', 61, ARRAY['coveredByScheme']::text[], '61 or more days', 'In addition, the dispute was processed {n} calendar days after the date of the letter or advice from the bonding authority or insurance scheme, beyond the 60-day time limit that applies where a reimbursement claim was required.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G34'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterTransactionDate'), 'LE', 14, ARRAY['noExpectedDate','bankruptNotYes']::text[], '14 or fewer days', 'In addition, the dispute was raised {n} calendar days after the transaction date, within the 15-day waiting period that applies where no expected date was given.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G36'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterServiceCancellation'), 'LE', 14, ARRAY['cancellationKnown','mccNotAgency','bankruptNotYes']::text[], '14 or fewer days', 'In addition, the dispute was raised {n} calendar days after the merchant cancelled, within the required 15-day waiting period.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G27'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterBondingClaimSubmitted'), 'LE', 59, ARRAY['coveredByScheme','schemeInsufficientNotYes']::text[], '59 or fewer days', 'In addition, the dispute was raised {n} calendar days after the reimbursement claim was submitted to the bonding authority or insurance scheme, inside the 60-day waiting period the rule requires.');
+INSERT INTO wdp_ai.requirement_time_limit (requirement_id, day_count_fact_key_id, compare_op, day_limit, conditions, limit_text, filing_sentence) VALUES
+  ((SELECT r.id FROM wdp_ai.requirement r WHERE r.reason_code_id = (SELECT id FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1') AND r.code = 'G42'), (SELECT id FROM wdp_ai.fact_key WHERE key = 'dispute.daysAfterExpectedReceiptDate'), 'LT', 0, ARRAY['bankruptNotYes']::text[], 'below 0 days (raised before the expected date)', 'In addition, the dispute was raised {n} calendar days before the date the cardholder expected to receive the merchandise or services, and the issuer''s filing gives no reason for disputing early.');
+
+COMMIT;
