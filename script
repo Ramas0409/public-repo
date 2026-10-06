@@ -1,0 +1,10 @@
+SELECT id, key FROM wdp_ai.fact_key WHERE id = 7;
+
+SELECT t.requirement_id, r.code, r.reason_code_id, t.day_count_fact_key_id, t.conditions
+  FROM wdp_ai.requirement_time_limit t
+  LEFT JOIN wdp_ai.requirement r ON r.id = t.requirement_id
+ WHERE t.day_count_fact_key_id = 7;
+
+SELECT count(*) AS time_limits,
+       count(*) FILTER (WHERE 'mccIsAgency' = ANY(conditions) OR 'mccNotAgency' = ANY(conditions)) AS renamed_rows
+  FROM wdp_ai.requirement_time_limit;
