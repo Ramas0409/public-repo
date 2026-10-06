@@ -1,0 +1,5 @@
+SELECT id, network, code, catalogue_version FROM wdp_ai.reason_code;                                                                                                            
+                                                                                                                                                                                  
+  SELECT reason_code_id, count(*) FROM wdp_ai.requirement GROUP BY 1;                                                                                                             
+                                                                                                                                                                                  
+  SELECT count(*) FROM wdp_ai.requirement_time_limit;
