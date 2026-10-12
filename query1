@@ -1,0 +1,7 @@
+SELECT rc.code, rc.catalogue_version, rc.enabled,                                                                                                                               
+         (SELECT count(*) FROM wdp_ai.requirement r WHERE r.reason_code_id = rc.id) AS rows,                                                                                      
+         (SELECT count(*) FROM wdp_ai.requirement r WHERE r.reason_code_id = rc.id AND r.role IS NOT NULL) AS roles,                                                              
+         rc.never_mention IS NOT NULL AS never_mention, cardinality(rc.banned_phrases) AS banned                                                                                  
+    FROM wdp_ai.reason_code rc ORDER BY rc.code;         
+
+SELECT count(*) FROM wdp_ai.fact_key WHERE label IS NOT NULL
