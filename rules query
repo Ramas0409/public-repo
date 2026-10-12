@@ -1,0 +1,33 @@
+SELECT r.id, r.name, r.status, r.display_order
+FROM rf_rule r
+JOIN rf_rule_group g ON g.id = r.rule_group_id
+WHERE g.group_type = :groupType
+  AND g.platform IN (:platform, 'ALL')
+  AND g.owner_type = 'MERCHANT'
+  AND NOT EXISTS (
+        SELECT 1
+        FROM rf_rule_entity_scope s
+        WHERE s.rule_id = r.id
+          AND (s.chain_value IS NULL
+               OR s.chain_value NOT IN (:userChains)))
+ORDER BY r.display_order;
+
+
+SELECT r.id, r.predicate, r.actions,
+       MIN(CASE WHEN s.scope_level = 0 THEN 6
+                ELSE s.scope_level END) AS lvl
+FROM rf_rule r
+JOIN rf_rule_group g        ON g.id = r.rule_group_id
+JOIN rf_rule_entity_scope s ON s.rule_id = r.id
+WHERE g.group_type = :groupType
+  AND g.platform IN (:platform, 'ALL')
+  AND g.is_enabled = true
+  AND r.status = 'ACTIVE'
+  AND (    s.scope_level = 0
+       OR (s.scope_level = 1 AND s.entity_value = :mid)
+       OR (s.scope_level = 2 AND s.entity_value = :store)
+       OR (s.scope_level = 3 AND s.entity_value = :division)
+       OR (s.scope_level = 4 AND s.entity_value = :chain)
+       OR (s.scope_level = 5 AND s.entity_value = :superChain))
+GROUP BY r.id
+ORDER BY lvl, r.display_order;
