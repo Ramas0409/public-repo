@@ -1,0 +1,2251 @@
+{
+ "_about": "Mock guardrail fixture for documents/_masking: the PII entities a gateway guardrail configured per the masking design would detect on each page of the synthetic set, keyed by file name and page. Built from masking_expectations.xlsx sheet items on 2026-10-17. Catalan-page values, (at)-form emails and UK account numbers are left out to mimic what such a guardrail would not detect; card numbers are included so the second net of 3.3.9 is exercised.",
+ "documents": {
+  "2716408395_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 11** **** 1111"
+    },
+    {
+     "type": "NAME",
+     "match": "ORTEGA VILLALBA, MARIA ELENA"
+    },
+    {
+     "type": "NAME",
+     "match": "Lucía Ferrán Soler"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 913 27 50 64"
+    },
+    {
+     "type": "EMAIL",
+     "match": "contracargos@bancomeridiano.es"
+    }
+   ]
+  },
+  "2716408395_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Paseo de la Castellana 210"
+    },
+    {
+     "type": "PHONE",
+     "match": "900 41 27 50"
+    },
+    {
+     "type": "NAME",
+     "match": "María Elena Ortega Villalba"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "C/ Toledo 72, 3º 2ª"
+    },
+    {
+     "type": "PHONE",
+     "match": "612 48 90 17"
+    },
+    {
+     "type": "EMAIL",
+     "match": "maria.ortega.villalba+compras@gmail.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Andrés"
+    }
+   ]
+  },
+  "2716408395_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Avda. de la Industria 14, Nave 3"
+    },
+    {
+     "type": "PHONE",
+     "match": "910 47 33 82"
+    },
+    {
+     "type": "EMAIL",
+     "match": "atencion@electrohogarbrisa.es"
+    },
+    {
+     "type": "NAME",
+     "match": "María Elena Ortega Villalba"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Calle de Toledo 72, 3º 2ª"
+    },
+    {
+     "type": "NAME",
+     "match": "Andrés Ortega Villalba"
+    },
+    {
+     "type": "NAME",
+     "match": "Jorge Salcedo Prieto"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Avenida de la Industria 14, Nave 3"
+    },
+    {
+     "type": "EMAIL",
+     "match": "jorge.salcedo@electrohogarbrisa.es"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 910 47 33 82"
+    }
+   ],
+   "2": [
+    {
+     "type": "EMAIL",
+     "match": "atencion@electrohogarbrisa.es"
+    },
+    {
+     "type": "EMAIL",
+     "match": "maria.ortega.villalba+compras@gmail.com"
+    },
+    {
+     "type": "NAME",
+     "match": "María Elena"
+    },
+    {
+     "type": "NAME",
+     "match": "María Elena Ortega Villalba"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Calle de Toledo 72, 3º 2ª"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 612 48 90 17"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "A. ORTEGA"
+    },
+    {
+     "type": "NAME",
+     "match": "Maria Elena Ortega Villalba"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Calle de la Logística 9, Nave B"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 910 81 22 50"
+    }
+   ],
+   "4": [
+    {
+     "type": "ADDRESS",
+     "match": "Calle de Toledo 72, 3º 2ª"
+    },
+    {
+     "type": "NAME",
+     "match": "Andrés Ortega Villalba"
+    },
+    {
+     "type": "NAME",
+     "match": "A. Ortega"
+    }
+   ],
+   "5": [
+    {
+     "type": "EMAIL",
+     "match": "noreply@dhl.com"
+    },
+    {
+     "type": "EMAIL",
+     "match": "maria.ortega.villalba+compras@gmail.com"
+    },
+    {
+     "type": "NAME",
+     "match": "MARÍA ELENA ORTEGA VILLALBA"
+    },
+    {
+     "type": "NAME",
+     "match": "Iván"
+    },
+    {
+     "type": "PHONE",
+     "match": "910 81 22 50"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34-612-489-017"
+    },
+    {
+     "type": "EMAIL",
+     "match": "atencion@electrohogarbrisa.es"
+    },
+    {
+     "type": "NAME",
+     "match": "María Elena"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Calle de Toledo 72, 3º 2ª"
+    },
+    {
+     "type": "NAME",
+     "match": "Andrés Ortega Villalba"
+    },
+    {
+     "type": "PHONE",
+     "match": "910 47 33 82"
+    }
+   ]
+  },
+  "3150927468_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "411111******1111"
+    },
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    },
+    {
+     "type": "NAME",
+     "match": "Owen Pritchard"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 20 7946 0318"
+    },
+    {
+     "type": "EMAIL",
+     "match": "chargebacks@northgatebank.co.uk"
+    }
+   ]
+  },
+  "3150927468_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "NAME",
+     "match": "Rosalind Whitfield"
+    },
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 7700 900418"
+    },
+    {
+     "type": "EMAIL",
+     "match": "ros@whitfield-home.co.uk"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Flat 2, 17 Larkspur Road"
+    },
+    {
+     "type": "NAME",
+     "match": "Owen Pritchard"
+    }
+   ]
+  },
+  "3150927468_Merchant.pdf": {
+   "1": [
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "12 rue des Potiers"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 38 52"
+    },
+    {
+     "type": "EMAIL",
+     "match": "contact@atelier-hm-ceramique.fr"
+    },
+    {
+     "type": "NAME",
+     "match": "Rosalind Whitfield"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Flat 2, 17 Larkspur Road"
+    },
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    },
+    {
+     "type": "NAME",
+     "match": "H. Marchetti"
+    },
+    {
+     "type": "NAME",
+     "match": "HÉLÈNE MARCHETTI"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Hélène"
+    },
+    {
+     "type": "NAME",
+     "match": "WHITFIELD Rosalind"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Flat 2, 17 Larkspur Road"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 7700 900418"
+    },
+    {
+     "type": "EMAIL",
+     "match": "ros@whitfield-home.co.uk"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 1111 1111 1111"
+    },
+    {
+     "type": "NAME",
+     "match": "Rosalind Whitfield"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "12 rue des Potiers"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Unit 4, Wharfside Way"
+    },
+    {
+     "type": "PHONE",
+     "match": "0161 496 0911"
+    }
+   ],
+   "4": [
+    {
+     "type": "ADDRESS",
+     "match": "Flat 2, 17 Larkspur Road"
+    },
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    }
+   ],
+   "5": [
+    {
+     "type": "EMAIL",
+     "match": "pkginfo@ups.com"
+    },
+    {
+     "type": "EMAIL",
+     "match": "ros@whitfield-home.co.uk"
+    },
+    {
+     "type": "NAME",
+     "match": "R WHITFIELD"
+    },
+    {
+     "type": "EMAIL",
+     "match": "helene@atelier-hm-ceramique.fr"
+    },
+    {
+     "type": "NAME",
+     "match": "Rosalind"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 38 52"
+    },
+    {
+     "type": "NAME",
+     "match": "Rosalind Whitfield"
+    },
+    {
+     "type": "PHONE",
+     "match": "07700 900418"
+    }
+   ],
+   "6": [
+    {
+     "type": "NAME",
+     "match": "DUVAL Corinne"
+    },
+    {
+     "type": "NAME",
+     "match": "WHITFIELD Rosalind"
+    },
+    {
+     "type": "NAME",
+     "match": "BERGER Anaïs"
+    },
+    {
+     "type": "PHONE",
+     "match": "07700 900418"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    }
+   ]
+  },
+  "4402815937_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "400005******5556"
+    },
+    {
+     "type": "NAME",
+     "match": "KOEHLER JUERGEN"
+    },
+    {
+     "type": "NAME",
+     "match": "Henrike Vogt"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 69 5550 4127"
+    },
+    {
+     "type": "EMAIL",
+     "match": "reklamation@rheinwaldbank.de"
+    }
+   ]
+  },
+  "4402815937_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Mainzer Landstraße 61"
+    },
+    {
+     "type": "PHONE",
+     "match": "069 5550 4100"
+    },
+    {
+     "type": "NAME",
+     "match": "Jürgen Köhler"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Kastanienallee 41, Hinterhaus, 2. OG links"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 176 4418 2097"
+    },
+    {
+     "type": "EMAIL",
+     "match": "j.koehler@koehler-familie.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Leon Köhler"
+    }
+   ]
+  },
+  "4402815937_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Lindenhofstraße 12"
+    },
+    {
+     "type": "PHONE",
+     "match": "0221 3388 4170"
+    },
+    {
+     "type": "EMAIL",
+     "match": "anmeldung@sprachinstitut-lindenhof.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Juergen Koehler"
+    },
+    {
+     "type": "NAME",
+     "match": "Leon Köhler"
+    },
+    {
+     "type": "NAME",
+     "match": "Anja Weißenborn"
+    },
+    {
+     "type": "EMAIL",
+     "match": "a.weissenborn@sprachinstitut-lindenhof.de"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 221 3388 4170"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Leon Köhler"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Boxhagener Straße 87, WG 4"
+    },
+    {
+     "type": "PHONE",
+     "match": "0176 3302 7781"
+    },
+    {
+     "type": "NAME",
+     "match": "Jürgen Köhler"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Kastanienallee 41"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Hinterhaus, 2. OG links"
+    },
+    {
+     "type": "EMAIL",
+     "match": "j.koehler@koehler-familie.de"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4000 0566 5566 5556"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "Jürgen Köhler"
+    },
+    {
+     "type": "EMAIL",
+     "match": "j.koehler@koehler-familie.de"
+    },
+    {
+     "type": "EMAIL",
+     "match": "anmeldung@sprachinstitut-lindenhof.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Leon Köhler"
+    },
+    {
+     "type": "NAME",
+     "match": "Weißenborn"
+    },
+    {
+     "type": "PHONE",
+     "match": "0176 44182097"
+    },
+    {
+     "type": "NAME",
+     "match": "Anja Weißenborn"
+    },
+    {
+     "type": "EMAIL",
+     "match": "a.weissenborn@sprachinstitut-lindenhof.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Köhler"
+    },
+    {
+     "type": "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+     "match": "DE50 7306 9912 0045 8813 27"
+    },
+    {
+     "type": "NAME",
+     "match": "J. Köhler"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Juergen Koehler"
+    },
+    {
+     "type": "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+     "match": "DE50 7306 9912 0045 8813 27"
+    },
+    {
+     "type": "NAME",
+     "match": "Koehler"
+    },
+    {
+     "type": "EMAIL",
+     "match": "buchhaltung@sprachinstitut-lindenhof.de"
+    }
+   ],
+   "5": [
+    {
+     "type": "ADDRESS",
+     "match": "Lindenhofstraße 12"
+    }
+   ]
+  },
+  "5093371826_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4012 88** **** 1881"
+    },
+    {
+     "type": "NAME",
+     "match": "DARNELL WHITAKER"
+    },
+    {
+     "type": "NAME",
+     "match": "Tamara Ellison"
+    },
+    {
+     "type": "PHONE",
+     "match": "(704) 555-0186"
+    },
+    {
+     "type": "EMAIL",
+     "match": "disputes@cobaltridgecu.org"
+    }
+   ]
+  },
+  "5093371826_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "900 Tryon Commons Blvd"
+    },
+    {
+     "type": "PHONE",
+     "match": "(704) 555-0100"
+    },
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "418 Maple Hollow St, Apt 3B"
+    },
+    {
+     "type": "PHONE",
+     "match": "(828) 555-0147"
+    },
+    {
+     "type": "EMAIL",
+     "match": "darnell.whitaker@outlook.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Kayla Brandt"
+    }
+   ]
+  },
+  "5093371826_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "2650 Laurel Fork Road"
+    },
+    {
+     "type": "PHONE",
+     "match": "(828) 555-0182"
+    },
+    {
+     "type": "EMAIL",
+     "match": "reservations@blueheronlodge.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "NAME",
+     "match": "Whitaker"
+    },
+    {
+     "type": "NAME",
+     "match": "Kayla Brandt"
+    },
+    {
+     "type": "EMAIL",
+     "match": "kayla.brandt@blueheronlodge.com"
+    },
+    {
+     "type": "PHONE",
+     "match": "828-555-0182"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "418 Maple Hollow Street, Apt 3B"
+    },
+    {
+     "type": "PHONE",
+     "match": "828-555-0147"
+    },
+    {
+     "type": "EMAIL",
+     "match": "darnell.whitaker@outlook.com"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "K. Brandt"
+    },
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "PHONE",
+     "match": "+1 828 555 0147"
+    },
+    {
+     "type": "NAME",
+     "match": "M. Ostrowski"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "EMAIL",
+     "match": "darnell.whitaker@outlook.com"
+    },
+    {
+     "type": "EMAIL",
+     "match": "reservations@blueheronlodge.com"
+    },
+    {
+     "type": "PHONE",
+     "match": "(828) 555-0147"
+    },
+    {
+     "type": "NAME",
+     "match": "Darnell"
+    },
+    {
+     "type": "NAME",
+     "match": "Kayla Brandt"
+    },
+    {
+     "type": "EMAIL",
+     "match": "kayla.brandt@blueheronlodge.com"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "2650 Laurel Fork Rd"
+    }
+   ],
+   "5": [
+    {
+     "type": "NAME",
+     "match": "Darnell Whitaker"
+    },
+    {
+     "type": "US_BANK_ACCOUNT_NUMBER",
+     "match": "004417290035"
+    },
+    {
+     "type": "NAME",
+     "match": "Martin Ostrowski"
+    },
+    {
+     "type": "EMAIL",
+     "match": "accounts@blueheronlodge.com"
+    }
+   ],
+   "6": [
+    {
+     "type": "ADDRESS",
+     "match": "2650 Laurel Fork Road"
+    }
+   ]
+  },
+  "6128450937_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111-11xx-xxxx-1111"
+    },
+    {
+     "type": "NAME",
+     "match": "SOLBERG INGRID"
+    },
+    {
+     "type": "NAME",
+     "match": "Vicent Albors Ferrer"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 963 52 18 07"
+    },
+    {
+     "type": "EMAIL",
+     "match": "reclamaciones@cajalevantina.es"
+    }
+   ]
+  },
+  "6128450937_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Plaza del Ayuntamiento 6"
+    },
+    {
+     "type": "PHONE",
+     "match": "963 52 18 00"
+    },
+    {
+     "type": "NAME",
+     "match": "Ingrid Solberg"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Avenida del Puerto 118, 5º, pta. 9"
+    },
+    {
+     "type": "PHONE",
+     "match": "655 21 87 40"
+    },
+    {
+     "type": "EMAIL",
+     "match": "ingrid.solberg@correo-vh.es"
+    },
+    {
+     "type": "NAME",
+     "match": "Henrik Solberg"
+    },
+    {
+     "type": "NAME",
+     "match": "Núria"
+    }
+   ]
+  },
+  "6128450937_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Carrer de Sant Salvador 31"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 932 18 46 70"
+    },
+    {
+     "type": "EMAIL",
+     "match": "reserves@hotelmiradorgracia.cat"
+    },
+    {
+     "type": "NAME",
+     "match": "Ingrid Solberg"
+    },
+    {
+     "type": "NAME",
+     "match": "Henrik Solberg"
+    },
+    {
+     "type": "NAME",
+     "match": "Núria Puigdomènech Casals"
+    },
+    {
+     "type": "EMAIL",
+     "match": "nuria.puigdomenech@hotelmiradorgracia.cat"
+    },
+    {
+     "type": "PHONE",
+     "match": "932 18 46 70"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Ingrid Solberg"
+    },
+    {
+     "type": "NAME",
+     "match": "Henrik Solberg"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 1111 1111 1111"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "5555 5555 5555 4444"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111111111111111"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "BRANDT, OLIVER"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "371449635398431"
+    },
+    {
+     "type": "NAME",
+     "match": "SOLBERG, INGRID"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111111111111111"
+    },
+    {
+     "type": "NAME",
+     "match": "MORA PASCUAL, CLARA"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4222222222222"
+    },
+    {
+     "type": "USERNAME",
+     "match": "npuigdomenech"
+    },
+    {
+     "type": "NAME",
+     "match": "Núria Puigdomènech Casals"
+    }
+   ],
+   "4": [
+    {
+     "type": "ADDRESS",
+     "match": "Carrer de Sant Salvador 31"
+    },
+    {
+     "type": "NAME",
+     "match": "Ingrid Solberg"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Avenida del Puerto 118, 5º, pta. 9"
+    },
+    {
+     "type": "PHONE",
+     "match": "+34 655 21 87 40"
+    },
+    {
+     "type": "EMAIL",
+     "match": "ingrid.solberg@correo-vh.es"
+    },
+    {
+     "type": "NAME",
+     "match": "Henrik Solberg"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 1111 1111 1111"
+    }
+   ],
+   "5": [
+    {
+     "type": "NAME",
+     "match": "Ingrid Solberg"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 1111 1111 1111"
+    }
+   ]
+  },
+  "6893017245_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "411111xxxxxx1111"
+    },
+    {
+     "type": "NAME",
+     "match": "PRIYA RAMAN"
+    },
+    {
+     "type": "NAME",
+     "match": "Monique Darby"
+    },
+    {
+     "type": "PHONE",
+     "match": "(312) 555-0144"
+    },
+    {
+     "type": "EMAIL",
+     "match": "cardservices@lakeshorenb.com"
+    }
+   ]
+  },
+  "6893017245_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "401 N Michigan Ave"
+    },
+    {
+     "type": "PHONE",
+     "match": "(312) 555-0100"
+    },
+    {
+     "type": "NAME",
+     "match": "Priya Raman"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "2207 Larchmont Ave, Unit 5"
+    },
+    {
+     "type": "PHONE",
+     "match": "(614) 555-0129"
+    },
+    {
+     "type": "EMAIL",
+     "match": "priya.raman@ramanlabs.io"
+    },
+    {
+     "type": "NAME",
+     "match": "Marcus"
+    }
+   ]
+  },
+  "6893017245_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "24890 E 78th Ave"
+    },
+    {
+     "type": "PHONE",
+     "match": "1-800-555-0199"
+    },
+    {
+     "type": "EMAIL",
+     "match": "help@summitdrive.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Priya Raman"
+    },
+    {
+     "type": "NAME",
+     "match": "Marcus Delgado"
+    },
+    {
+     "type": "EMAIL",
+     "match": "m.delgado@summitdrive.com"
+    },
+    {
+     "type": "PHONE",
+     "match": "+1 303-555-0172"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Priya Raman"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "2207 Larchmont Ave, Unit 5"
+    },
+    {
+     "type": "DRIVER_ID",
+     "match": "TR482917"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111-1111-1111-1111"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "3782 822463 10005"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111111111111111"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "Priya Raman"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "378282246310005"
+    }
+   ],
+   "4": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111111111111111"
+    },
+    {
+     "type": "NAME",
+     "match": "M. Delgado"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "5105105105105100"
+    },
+    {
+     "type": "NAME",
+     "match": "T. Okafor"
+    },
+    {
+     "type": "PHONE",
+     "match": "+1 614-555-0129"
+    }
+   ],
+   "5": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111 1111 1111 1111"
+    },
+    {
+     "type": "NAME",
+     "match": "RAMAN, PRIYA"
+    },
+    {
+     "type": "DRIVER_ID",
+     "match": "TR482917"
+    },
+    {
+     "type": "PHONE",
+     "match": "(614) 555-0129"
+    },
+    {
+     "type": "EMAIL",
+     "match": "priya.raman@ramanlabs.io"
+    },
+    {
+     "type": "NAME",
+     "match": "Marcus Delgado"
+    }
+   ]
+  },
+  "7246019583_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "424242******4242"
+    },
+    {
+     "type": "NAME",
+     "match": "C FAIRBAIRN-SHAW"
+    },
+    {
+     "type": "NAME",
+     "match": "Priyanka Shah"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 20 7946 0742"
+    },
+    {
+     "type": "EMAIL",
+     "match": "chargebacks@northgatebank.co.uk"
+    }
+   ]
+  },
+  "7246019583_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "NAME",
+     "match": "Callum Fairbairn-Shaw"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Flat 5, 88 Victoria Avenue"
+    },
+    {
+     "type": "PHONE",
+     "match": "07700 900731"
+    },
+    {
+     "type": "EMAIL",
+     "match": "c.fairbairn-shaw@gmail.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Aisha"
+    }
+   ]
+  },
+  "7246019583_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Unit 7, Calder Wharf"
+    },
+    {
+     "type": "PHONE",
+     "match": "0113 496 0550"
+    },
+    {
+     "type": "EMAIL",
+     "match": "support@vitalstream.co.uk"
+    },
+    {
+     "type": "NAME",
+     "match": "Callum Fairbairn-Shaw"
+    },
+    {
+     "type": "NAME",
+     "match": "Aisha Rahman"
+    },
+    {
+     "type": "EMAIL",
+     "match": "aisha.rahman@vitalstream.co.uk"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Callum Fairbairn-Shaw"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "2223 0031 2200 3222"
+    }
+   ],
+   "3": [
+    {
+     "type": "USERNAME",
+     "match": "callum.fairbairn"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "203.0.113.58"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "4.12.0.118"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "192.168.1.24"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "2001:db8:7a3c:11::4e"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "4.12.1.120"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Callum"
+    },
+    {
+     "type": "NAME",
+     "match": "Aisha Rahman"
+    },
+    {
+     "type": "EMAIL",
+     "match": "support@vitalstream.co.uk"
+    },
+    {
+     "type": "EMAIL",
+     "match": "c.fairbairn-shaw@gmail.com"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 7700 900731"
+    }
+   ],
+   "5": [
+    {
+     "type": "EMAIL",
+     "match": "support@vitalstream.co.uk"
+    },
+    {
+     "type": "EMAIL",
+     "match": "c.fairbairn-shaw@gmail.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Callum"
+    },
+    {
+     "type": "USERNAME",
+     "match": "callum.fairbairn"
+    },
+    {
+     "type": "PASSWORD",
+     "match": "Kx7!pW2r-Hm"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 7700 900731"
+    }
+   ],
+   "6": [
+    {
+     "type": "NAME",
+     "match": "Callum Fairbairn-Shaw"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Flat 5, 88 Victoria Avenue"
+    }
+   ]
+  },
+  "7781250364_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4000 00** **** 3155"
+    },
+    {
+     "type": "NAME",
+     "match": "LEFEVRE-GARNIER MATHILDE"
+    },
+    {
+     "type": "NAME",
+     "match": "Élodie Marchand"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 02 18"
+    },
+    {
+     "type": "EMAIL",
+     "match": "litiges.cartes@banquelavandiere.fr"
+    }
+   ]
+  },
+  "7781250364_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "8 place Bellecour"
+    },
+    {
+     "type": "PHONE",
+     "match": "04 65 71 02 00"
+    },
+    {
+     "type": "NAME",
+     "match": "Mathilde Lefèvre-Garnier"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "14 rue des Lilas, appt 23"
+    },
+    {
+     "type": "PHONE",
+     "match": "06 39 98 41 27"
+    },
+    {
+     "type": "EMAIL",
+     "match": "mathilde.lg@laposte.net"
+    },
+    {
+     "type": "NAME",
+     "match": "Yanis Benali"
+    }
+   ]
+  },
+  "7781250364_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "27 quai Perrache"
+    },
+    {
+     "type": "PHONE",
+     "match": "04 65 71 90 33"
+    },
+    {
+     "type": "EMAIL",
+     "match": "service-client@panierfrais.fr"
+    },
+    {
+     "type": "NAME",
+     "match": "Mathilde Lefèvre-Garnier"
+    },
+    {
+     "type": "NAME",
+     "match": "Lefèvre-Garnier"
+    },
+    {
+     "type": "NAME",
+     "match": "Yanis Benali"
+    },
+    {
+     "type": "EMAIL",
+     "match": "y.benali@panierfrais.fr"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 90 33"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Mathilde Lefèvre-Garnier"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "14 rue des Lilas, appt 23"
+    }
+   ],
+   "3": [
+    {
+     "type": "EMAIL",
+     "match": "mathilde.lg@laposte.net"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "198.51.100.23"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "7.3.1.204"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "2001:db8:c0de:4::19"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "7.3.2.211"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Mathilde"
+    },
+    {
+     "type": "NAME",
+     "match": "Yanis"
+    },
+    {
+     "type": "PHONE",
+     "match": "06 39 98 41 27"
+    },
+    {
+     "type": "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+     "match": "FR36 3078 8000 7121 7946 2053 184"
+    },
+    {
+     "type": "EMAIL",
+     "match": "service-client@panierfrais.fr"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 90 33"
+    },
+    {
+     "type": "NAME",
+     "match": "Yanis Benali"
+    }
+   ]
+  },
+  "8350641927_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4242 42** **** 4242"
+    },
+    {
+     "type": "NAME",
+     "match": "HARTMANN TOBIAS"
+    },
+    {
+     "type": "NAME",
+     "match": "Markus Eberle"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 711 9055 3120"
+    },
+    {
+     "type": "EMAIL",
+     "match": "kartenreklamation@vb-neckartal.de"
+    }
+   ]
+  },
+  "8350641927_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Königstraße 22"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 9055 3100"
+    },
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Wilhelmstraße 18a"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 2290 4418"
+    },
+    {
+     "type": "EMAIL",
+     "match": "tobias.hartmann@posteo.de"
+    }
+   ]
+  },
+  "8350641927_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Rotebühlstraße 145"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 6634 2210"
+    },
+    {
+     "type": "EMAIL",
+     "match": "service@velowerk.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "NAME",
+     "match": "Kemal Yıldız"
+    },
+    {
+     "type": "EMAIL",
+     "match": "k.yildiz@velowerk.de"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 711 6634 2210"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Wilhelmstraße 18a"
+    },
+    {
+     "type": "PHONE",
+     "match": "+49 711 2290 4418"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "6759 4768 7154 5538 591"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "EMAIL",
+     "match": "tobias.hartmann@posteo.de"
+    },
+    {
+     "type": "EMAIL",
+     "match": "service@velowerk.de"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 2290 4418"
+    },
+    {
+     "type": "NAME",
+     "match": "Kemal Yıldız"
+    },
+    {
+     "type": "EMAIL",
+     "match": "k.yildiz@velowerk.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Hartmann"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Rotebühlstraße 145"
+    },
+    {
+     "type": "NAME",
+     "match": "Kemal"
+    },
+    {
+     "type": "EMAIL",
+     "match": "noreply@dhl.de"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Paulinenstraße 30"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Tobias"
+    },
+    {
+     "type": "NAME",
+     "match": "Kemal"
+    },
+    {
+     "type": "NAME",
+     "match": "Miriam Hartmann"
+    },
+    {
+     "type": "EMAIL",
+     "match": "tobias.hartmann@posteo.de"
+    }
+   ],
+   "5": [
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "NAME",
+     "match": "Kemal Yıldız"
+    }
+   ],
+   "6": [
+    {
+     "type": "ADDRESS",
+     "match": "Hauptstätter Straße 61"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 4471 0936"
+    },
+    {
+     "type": "EMAIL",
+     "match": "werkstatt@zweirad-kessler.de"
+    },
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "6759 6469 4862"
+    },
+    {
+     "type": "NAME",
+     "match": "Ralf Kessler"
+    }
+   ],
+   "7": [
+    {
+     "type": "ADDRESS",
+     "match": "Hauptstätter Straße 61"
+    },
+    {
+     "type": "NAME",
+     "match": "Tobias Hartmann"
+    },
+    {
+     "type": "NAME",
+     "match": "Miriam Hartmann"
+    },
+    {
+     "type": "PHONE",
+     "match": "0711 2290 4418"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "6759 6498 2643 8453"
+    }
+   ]
+  },
+  "8812739046_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "400000******3220"
+    },
+    {
+     "type": "NAME",
+     "match": "IMOGEN THACKERAY"
+    },
+    {
+     "type": "NAME",
+     "match": "Fiona Gallagher"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 118 496 0275"
+    },
+    {
+     "type": "EMAIL",
+     "match": "disputes@thamesbridge.co.uk"
+    }
+   ]
+  },
+  "8812739046_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "3 Cobble Lane"
+    },
+    {
+     "type": "PHONE",
+     "match": "0161 496 0237"
+    },
+    {
+     "type": "EMAIL",
+     "match": "imogen@thackeray-studio.co.uk"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Riverside House, 14 Kings Road"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    }
+   ]
+  },
+  "8812739046_Merchant.pdf": {
+   "1": [
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "12 rue des Potiers"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 38 52"
+    },
+    {
+     "type": "EMAIL",
+     "match": "contact@atelier-hm-ceramique.fr"
+    },
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "NAME",
+     "match": "H. Marchetti"
+    }
+   ],
+   "2": [
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "EMAIL",
+     "match": "imogen@thackeray-studio.co.uk"
+    },
+    {
+     "type": "EMAIL",
+     "match": "contact@atelier-hm-ceramique.fr"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène"
+    },
+    {
+     "type": "NAME",
+     "match": "Imogen"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    },
+    {
+     "type": "EMAIL",
+     "match": "helene@atelier-hm-ceramique.fr"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 38 52"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "Locker 5521, Heaton Chapel Retail Park, Manchester Road"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 161 496 0237"
+    }
+   ],
+   "3": [
+    {
+     "type": "NAME",
+     "match": "Hélène"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 6 39 98 72 15"
+    },
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 161 496 0237"
+    },
+    {
+     "type": "NAME",
+     "match": "Imogen"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "3 Cobble Lane"
+    },
+    {
+     "type": "PHONE",
+     "match": "0161 496 0237"
+    },
+    {
+     "type": "EMAIL",
+     "match": "claims@colisrapide.eu"
+    },
+    {
+     "type": "PHONE",
+     "match": "+33 4 65 71 55 00"
+    }
+   ],
+   "5": [
+    {
+     "type": "ADDRESS",
+     "match": "Unit 12, Hatter's Yard"
+    },
+    {
+     "type": "PHONE",
+     "match": "0161 496 0548"
+    },
+    {
+     "type": "EMAIL",
+     "match": "hello@porcelainmend.co.uk"
+    },
+    {
+     "type": "NAME",
+     "match": "Imogen Thackeray"
+    },
+    {
+     "type": "NAME",
+     "match": "Gwen Pryce"
+    }
+   ],
+   "6": [
+    {
+     "type": "NAME",
+     "match": "THACKERAY Imogen"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "3 Cobble Lane"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 161 496 0237"
+    },
+    {
+     "type": "NAME",
+     "match": "Hélène Marchetti"
+    }
+   ]
+  },
+  "9135027846_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "411111XXXXXX1111"
+    },
+    {
+     "type": "NAME",
+     "match": "GREGORY NOVAK"
+    },
+    {
+     "type": "NAME",
+     "match": "Dale Henning"
+    },
+    {
+     "type": "PHONE",
+     "match": "(406) 555-0131"
+    },
+    {
+     "type": "EMAIL",
+     "match": "fraud@pinecrestfcu.org"
+    }
+   ]
+  },
+  "9135027846_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "77 W Front St"
+    },
+    {
+     "type": "PHONE",
+     "match": "(406) 555-0100"
+    },
+    {
+     "type": "NAME",
+     "match": "Gregory Novak"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "1150 Sycamore Ridge Dr"
+    },
+    {
+     "type": "PHONE",
+     "match": "208.555.0163"
+    },
+    {
+     "type": "EMAIL",
+     "match": "greg.novak@novakhome.net"
+    },
+    {
+     "type": "NAME",
+     "match": "Dana Novak"
+    }
+   ]
+  },
+  "9135027846_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "3100 Brooks St"
+    },
+    {
+     "type": "PHONE",
+     "match": "(406) 555-0175"
+    },
+    {
+     "type": "EMAIL",
+     "match": "orders@coldwateroutfitters.com"
+    },
+    {
+     "type": "NAME",
+     "match": "Gregory Novak"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "1150 Sycamore Ridge Dr"
+    },
+    {
+     "type": "NAME",
+     "match": "Shauna Whitehorse"
+    },
+    {
+     "type": "EMAIL",
+     "match": "s.whitehorse@coldwateroutfitters.com"
+    }
+   ],
+   "2": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "411111******1111"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "1150 Sycamore Ridge Dr"
+    },
+    {
+     "type": "EMAIL",
+     "match": "greg.novak@novakhome.net"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "203.0.113.84"
+    }
+   ],
+   "3": [
+    {
+     "type": "EMAIL",
+     "match": "greg.novak@novakhome.net"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "203.0.113.84"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "2001:db8:1f2e:3d4c::8b"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Gregory Novak"
+    },
+    {
+     "type": "EMAIL",
+     "match": "greg.novak@novakhome.net"
+    },
+    {
+     "type": "PHONE",
+     "match": "(208) 555-0163"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "1150 Sycamore Ridge Dr"
+    }
+   ],
+   "5": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "411111******1111"
+    },
+    {
+     "type": "EMAIL",
+     "match": "greg.novak@novakhome.net"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "203.0.113.84"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "2001:db8:1f2e:3d4c::8b"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4111111111111111"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "6011111111111117"
+    },
+    {
+     "type": "NAME",
+     "match": "Gregory Novak"
+    },
+    {
+     "type": "NAME",
+     "match": "Dana Novak"
+    }
+   ]
+  },
+  "9604318572_Issuer_1.pdf": {
+   "1": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "401288******1881"
+    },
+    {
+     "type": "NAME",
+     "match": "O ADEYEMI-CLARKE"
+    },
+    {
+     "type": "NAME",
+     "match": "Gareth Llewellyn"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 29 2018 0442"
+    },
+    {
+     "type": "EMAIL",
+     "match": "fraud.disputes@severnvalleybank.co.uk"
+    }
+   ]
+  },
+  "9604318572_Issuer_2.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "1 Temple Quay"
+    },
+    {
+     "type": "PHONE",
+     "match": "0117 496 0100"
+    },
+    {
+     "type": "NAME",
+     "match": "Oluwaseun Adeyemi-Clarke"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "42 Kingsdown Road"
+    },
+    {
+     "type": "UK_NATIONAL_INSURANCE_NUMBER",
+     "match": "PZ 41 07 63 B"
+    },
+    {
+     "type": "PHONE",
+     "match": "0117 496 0384"
+    },
+    {
+     "type": "EMAIL",
+     "match": "seun.adeyemiclarke@icloud.com"
+    }
+   ]
+  },
+  "9604318572_Merchant.pdf": {
+   "1": [
+    {
+     "type": "ADDRESS",
+     "match": "Unit 3, Cabot Retail Park, Avonmouth Way"
+    },
+    {
+     "type": "PHONE",
+     "match": "0117 496 0712"
+    },
+    {
+     "type": "EMAIL",
+     "match": "collections.bristol@hartleyfinch.co.uk"
+    },
+    {
+     "type": "NAME",
+     "match": "Oluwaseun Adeyemi-Clarke"
+    },
+    {
+     "type": "NAME",
+     "match": "Bethany Moore"
+    },
+    {
+     "type": "NAME",
+     "match": "Daniel Price"
+    },
+    {
+     "type": "EMAIL",
+     "match": "d.price@hartleyfinch.co.uk"
+    }
+   ],
+   "2": [
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "401288******1881"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "198.51.100.77"
+    },
+    {
+     "type": "EMAIL",
+     "match": "seun.adeyemiclarke@icloud.com"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "42 Kingsdown Road"
+    }
+   ],
+   "3": [
+    {
+     "type": "EMAIL",
+     "match": "seun.adeyemiclarke@icloud.com"
+    },
+    {
+     "type": "PHONE",
+     "match": "+44 117 496 0384"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "198.51.100.77"
+    },
+    {
+     "type": "IP_ADDRESS",
+     "match": "2001:db8:aa04:9::31"
+    },
+    {
+     "type": "ADDRESS",
+     "match": "42 Kingsdown Road"
+    }
+   ],
+   "4": [
+    {
+     "type": "NAME",
+     "match": "Oluwaseun Adeyemi-Clarke"
+    }
+   ],
+   "5": [
+    {
+     "type": "NAME",
+     "match": "ADEYEMI-CLARKE"
+    },
+    {
+     "type": "NAME",
+     "match": "OLUWASEUN"
+    },
+    {
+     "type": "NAME",
+     "match": "O. Adeyemi-Clarke"
+    },
+    {
+     "type": "CREDIT_DEBIT_CARD_NUMBER",
+     "match": "4012 8888 8888 1881"
+    },
+    {
+     "type": "NAME",
+     "match": "Bethany Moore"
+    }
+   ]
+  }
+ }
+}
