@@ -7,6 +7,8 @@
 -- idempotency id and inserted_at (the outbox row's updated_at), and the scheduler's status, retry count and two
 -- timestamps; plus one tracking row (AI-INTAKE-00 / 00, status TRACKER) holding the intake's mark (CL-3010).
 -- Inserted, claimed and updated by the event service, which reads wdp.bre_orchestration_outbox itself.
+-- No unique index: the intake takes only outbox rows with an idempotency id it has not stored, and a repeated
+-- event with a new id is a second row (accepted).
 -- Grants the event service's user needs: SELECT, INSERT, UPDATE ON wdp.ai_response_events;
 -- SELECT ON wdp.bre_orchestration_outbox. The outbox needs an index on (component, status, updated_at).
 -- Not re-runnable as written: CREATE TABLE fails where the table exists.
@@ -34,10 +36,6 @@ CREATE TABLE wdp.ai_response_events (
     CONSTRAINT ai_response_events_status_check
         CHECK (status IN ('PENDING', 'PROCESSING', 'SUCCESS', 'FAIL', 'ERROR', 'SKIPPED', 'TRACKER'))
 );
-
-CREATE UNIQUE INDEX ai_response_events_unique
-    ON wdp.ai_response_events (i_case, i_action_seq, c_event_type, c_doc_type, c_action_type, c_case_stage, mode)
-    NULLS NOT DISTINCT;
 
 CREATE INDEX ai_response_events_claim_idx
     ON wdp.ai_response_events (status, created_at);
