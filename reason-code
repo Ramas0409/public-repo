@@ -1,0 +1,17 @@
+@Query(value = """
+        SELECT a.i_case, a.c_reason
+        FROM wdp.action a
+        WHERE a.i_case IN (:caseNumbers)
+          AND a.i_action_seq = '01'
+          AND a.c_reason IS NOT NULL
+        """, nativeQuery = true)
+List<Object[]> findReasonCodes(@Param("caseNumbers") Collection<String> caseNumbers);
+
+@Override
+public Map<String, String> reasonCodes(Set<String> caseNumbers) {
+    if (caseNumbers.isEmpty()) {
+        return Map.of();
+    }
+    return actionRepository.findReasonCodes(caseNumbers).stream()
+            .collect(Collectors.toMap(row -> (String) row[0], row -> (String) row[1]));
+}
