@@ -1,0 +1,44 @@
+-- Run in the office: the case and action columns the auto-response event service reads, for the cases to test here.
+-- Put the case numbers in "wanted", run, and save the result as CSV, UTF-8, with the header row (the column names
+-- below are what services/llm/poc/load_raw_text.py reads). One row per case: the case and its action '01', the
+-- action the event service reads. Dates and amounts are cast to text here so no client reformats them.
+-- The file holds card and customer data: it is never committed or shared.
+WITH wanted(i_case) AS (
+    VALUES ('CASE_NUMBER_1'),
+           ('CASE_NUMBER_2')
+)
+SELECT c.i_case,
+       a.i_action_seq,
+       c.c_acq_platform,
+       c.c_case_ntwk,
+       a.c_reason,
+       c.c_ntwk_case_id,
+       c.i_acq_refnce_num,
+       c.c_merchant_name,
+       c.c_cntry,
+       to_char(c.d_tr, 'YYYY-MM-DD')                 AS d_tr,
+       to_char(c.d_prcss_tr, 'YYYY-MM-DD')           AS d_prcss_tr,
+       c.a_purchase_amt::text                        AS a_purchase_amt,
+       c.c_purchase_currency,
+       c.i_purchase_amt_exponent,
+       c.c_auth_tr,
+       c.c_mcc,
+       c.a_csh_back::text                            AS a_csh_back,
+       c.i_acct_cdh_lst,
+       c.x_moto,
+       c.c_entry_mode,
+       to_char(a.d_action_reported, 'YYYY-MM-DD')    AS d_action_reported,
+       to_char(a.d_response_due, 'YYYY-MM-DD')       AS d_response_due,
+       a.a_dispute_amt::text                         AS a_dispute_amt,
+       a.c_dispute_currency,
+       a.i_dispute_currency_exponent
+FROM wanted w
+JOIN wdp."case" c ON c.i_case = w.i_case
+JOIN wdp.action a ON a.i_case = c.i_case AND a.i_action_seq = '01'
+ORDER BY c.i_case;
+
+-- The wanted cases the query above does not return (no case row, or no action '01'):
+-- WITH wanted(i_case) AS (VALUES ('CASE_NUMBER_1'), ('CASE_NUMBER_2'))
+-- SELECT w.i_case FROM wanted w
+-- WHERE NOT EXISTS (SELECT 1 FROM wdp."case" c JOIN wdp.action a ON a.i_case = c.i_case AND a.i_action_seq = '01'
+--                   WHERE c.i_case = w.i_case);
