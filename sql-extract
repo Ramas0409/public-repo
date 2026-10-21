@@ -1,7 +1,8 @@
 -- Run in the office: the case and action columns the auto-response event service reads, for the cases to test here.
 -- Put the case numbers in "wanted", run, and save the result as CSV, UTF-8, with the header row (the column names
 -- below are what services/llm/poc/load_raw_text.py reads). One row per case: the case and its action '01', the
--- action the event service reads. Dates and amounts are cast to text here so no client reformats them.
+-- action the event service reads, with the action's source case id (the number the documents often carry). Dates
+-- and amounts are cast to text here so no client reformats them.
 -- The file holds card and customer data: it is never committed or shared.
 WITH wanted(i_case) AS (
     VALUES ('CASE_NUMBER_1'),
@@ -9,6 +10,7 @@ WITH wanted(i_case) AS (
 )
 SELECT c.i_case,
        a.i_action_seq,
+       a.c_source_case_id,
        c.c_acq_platform,
        c.c_case_ntwk,
        a.c_reason,
