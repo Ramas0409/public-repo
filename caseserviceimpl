@@ -1,0 +1,38 @@
+package com.wp.wdp.auto.response.event.service.service.impl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import com.wp.wdp.auto.response.event.service.model.CaseDetails;
+import com.wp.wdp.auto.response.event.service.model.CaseDocument;
+import com.wp.wdp.auto.response.event.service.service.CaseRecordReader;
+import com.wp.wdp.auto.response.event.service.service.CaseService;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class CaseServiceImpl implements CaseService {
+
+    public static final String NOT_IMPLEMENTED = "the case's documents are read in the office, from the document service";
+    public static final Map<String, String> SIDE_BY_DOCUMENT_TYPE = Map.of(
+            "ISSRDOC", "ISSUER", "RESPDOC", "MERCHANT", "MISCDOC", "MERCHANT");
+
+    private final CaseRecordReader caseRecords;
+
+    @Override
+    public Optional<CaseDetails> findCase(String platform, String caseNumber, String actionSequence) {
+        Optional<CaseDetails> found = caseRecords.findCase(caseNumber, actionSequence);
+        found.ifPresent(details -> details.setDocuments(documents(platform, caseNumber, actionSequence)));
+        return found;
+    }
+
+    @Override
+    public Map<String, String> reasonCodes(Set<String> caseNumbers) {
+        return caseRecords.reasonCodes(caseNumbers);
+    }
+
+    private List<CaseDocument> documents(String platform, String caseNumber, String actionSequence) {
+        throw new UnsupportedOperationException(NOT_IMPLEMENTED);
+    }
+}
