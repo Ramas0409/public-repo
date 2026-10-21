@@ -1,0 +1,301 @@
+{
+  "name": "dispute-llm-service-non-prod",
+  "description": "This guardrail masks PII data and blocks messages containing PCI information, toxic content, or prompt-injection attempts.",
+  "blocked_input_messaging": "Your request couldn't be processed because it contains restricted or unsafe content. Please revise and try again",
+  "blocked_outputs_messaging": "Your request couldn't be processed because it contains restricted or unsafe content. Please revise and try again",
+  "tags": {
+    "application_id": "APM0002711",
+    "applications": "Dispute LLM Service",
+    "buc": "3506.500004.9028.000000.0000.A235.0000",
+    "created_by": "terraform",
+    "environment": "non-prod",
+    "owner_email": "Michael.Lochead@worldpay.com",
+    "tech_owner_email": "Rama.Singidi@worldpay.com",
+    "terraform_code": "wp-aiti-aws-bedrock-guardrails"
+  },
+  "content_policy_config": {
+    "content_filters_tier_config": {
+      "tier_name": "STANDARD"
+    },
+    "filters_config": [
+      {
+        "type": "HATE",
+        "input_strength": "MEDIUM",
+        "output_strength": "MEDIUM",
+        "input_action": "BLOCK",
+        "output_action": "NONE"
+      },
+      {
+        "type": "INSULTS",
+        "input_strength": "MEDIUM",
+        "output_strength": "MEDIUM",
+        "input_action": "BLOCK",
+        "output_action": "NONE"
+      },
+      {
+        "type": "SEXUAL",
+        "input_strength": "MEDIUM",
+        "output_strength": "MEDIUM",
+        "input_action": "BLOCK",
+        "output_action": "NONE"
+      },
+      {
+        "type": "VIOLENCE",
+        "input_strength": "MEDIUM",
+        "output_strength": "MEDIUM",
+        "input_action": "BLOCK",
+        "output_action": "NONE"
+      },
+      {
+        "type": "MISCONDUCT",
+        "input_strength": "MEDIUM",
+        "output_strength": "NONE",
+        "input_action": "NONE",
+        "output_action": "NONE"
+      },
+      {
+        "type": "PROMPT_ATTACK",
+        "input_strength": "MEDIUM",
+        "output_strength": "NONE",
+        "input_action": "NONE",
+        "output_action": "NONE"
+      }
+    ]
+  },
+  "sensitive_information_policy_config": {
+    "regexes_config": [
+      {
+        "action": "ANONYMIZE",
+        "name": "Placeholder",
+        "pattern": "\\b\\d{100,}\\b"
+      }
+    ],
+    "pii_entities_config": [
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "NAME"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "PHONE"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "EMAIL"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "ADDRESS"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "NONE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "AGE"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "USERNAME"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "PASSWORD"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "DRIVER_ID"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "NONE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "LICENSE_PLATE"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "NONE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "VEHICLE_IDENTIFICATION_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "PIN"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "IP_ADDRESS"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "MAC_ADDRESS"
+      },
+      {
+        "action": "NONE",
+        "input_action": "NONE",
+        "output_action": "NONE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "URL"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "CREDIT_DEBIT_CARD_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "CREDIT_DEBIT_CARD_CVV"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "INTERNATIONAL_BANK_ACCOUNT_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "US_PASSPORT_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "US_SOCIAL_SECURITY_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "US_BANK_ACCOUNT_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "CA_HEALTH_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "CA_SOCIAL_INSURANCE_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "UK_NATIONAL_INSURANCE_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "UK_NATIONAL_HEALTH_SERVICE_NUMBER"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "AWS_ACCESS_KEY"
+      },
+      {
+        "action": "ANONYMIZE",
+        "input_action": "ANONYMIZE",
+        "output_action": "ANONYMIZE",
+        "input_enabled": true,
+        "output_enabled": true,
+        "type": "AWS_SECRET_KEY"
+      }
+    ]
+  },
+  "create_guardrail_version": true
+}
