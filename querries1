@@ -1,0 +1,9 @@
+1. Keep a full copy:                                                                                                                                                              
+  CREATE TABLE wdp.ai_response_events_backup_20261023 AS SELECT * FROM wdp.ai_response_events;                                                                                      
+  2. Park the open rows as ERROR. That status is never claimed, and the table's CHECK allows no new status:                                                                         
+  UPDATE wdp.ai_response_events                                                                                                                                                     
+     SET status = 'ERROR', error_reason = 'parked before the stage-2 deploy', updated_at = now()                                                                                    
+   WHERE status IN ('PENDING', 'FAIL', 'PROCESSING');                                                                                                                               
+     Note the ids first if you want to bring them back later:                                                                                                                       
+  SELECT id FROM wdp.ai_response_events WHERE error_reason = 'parked before the stage-2 deploy';                                                                                    
+     To run one again, set it back to status = 'PENDING', retry_count = 0, error_reason = NULL.
