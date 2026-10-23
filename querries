@@ -1,0 +1,6 @@
+SELECT count(*) FROM wdp_ai.classifier_run WHERE decision IN ('CONTEST_PARTIAL','MANUAL_REVIEW');          -- 0                                                                   
+  SELECT count(*) FROM wdp_ai.contest_comparison WHERE llm_decision IN ('CONTEST_PARTIAL','MANUAL_REVIEW');  -- 0                                                                   
+  SELECT column_name FROM information_schema.columns                                                                                                                                
+   WHERE table_schema='wdp_ai' AND table_name='classifier_run' AND column_name IN ('mode','questionnaire_ref'); -- no rows                                                          
+  SELECT column_name FROM information_schema.columns                                                                                                                                
+   WHERE table_schema='wdp' AND table_name='ai_response_events' AND column_name IN ('outcome','run_id');      -- 2 row
