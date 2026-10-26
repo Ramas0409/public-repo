@@ -19,4 +19,12 @@
                     WHERE o.c_acq_platform = r.c_acq_platform AND o.i_case = r.i_case AND o.id <> r.id                                                                              
                       AND (o.status = 'PROCESSING'                                                                                                                                  
                            OR (o.status IN ('PENDING','FAIL') AND (o.created_at, o.id) < (r.created_at, r.id))))                                                                    
-  ORDER BY r.created_at, r.id;           
+  ORDER BY r.created_at, r.id;      
+
+
+SELECT id, i_case, status, length(status) AS len, status = 'PENDING' AS exact                                                                                                     
+  FROM wdp.ai_response_events                                                                                                                                                       
+  WHERE status ILIKE '%pend%';                                                                                                                                                      
+                                                                                                                                                                                    
+  - Rows come back with len above 7 or exact false: the status has a hidden character. Fix the rows with:                                                                           
+  UPDATE wdp.ai_response_events SET status = 'PENDING' WHERE status ILIKE '%pend%';
