@@ -1,0 +1,22 @@
+ -- 1. The full queue for each case that has a PENDING row                                                                                                                         
+  SELECT id, c_acq_platform, i_case, i_action_seq, status, retry_count, created_at, updated_at, error_reason                                                                        
+  FROM wdp.ai_response_events                                                                                                                                                       
+  WHERE (c_acq_platform, i_case) IN (SELECT c_acq_platform, i_case FROM wdp.ai_response_events WHERE status = 'PENDING')                                                            
+  ORDER BY c_acq_platform, i_case, created_at, id;                                                                                                                                  
+                                                                                                                                                                                    
+  -- 2. Sessions holding the table, or sitting in an open transaction                                                                                                               
+  SELECT a.pid, a.application_name, a.client_addr, a.state, a.xact_start, left(a.query, 80) AS query                                                                                
+  FROM pg_stat_activity a                                                                                                                                                           
+  WHERE a.datname = current_database()                                                                                                                                              
+    AND (a.state LIKE 'idle in transaction%'                                                                                                                                        
+         OR a.pid IN (SELECT l.pid FROM pg_locks l JOIN pg_class c ON c.oid = l.relation                                                                                            
+                      WHERE c.relname = 'ai_response_events'));                                                                                                                     
+                                                                                                                                                                                    
+  -- 3. The claim itself, without the lock: what the scheduler would take now                                                                                                       
+  SELECT r.id, r.i_case, r.status FROM wdp.ai_response_events r                                                                                                                     
+  WHERE r.status IN ('PENDING','FAIL')                                                                                                                                              
+    AND NOT EXISTS (SELECT 1 FROM wdp.ai_response_events o                                                                                                                          
+                    WHERE o.c_acq_platform = r.c_acq_platform AND o.i_case = r.i_case AND o.id <> r.id                                                                              
+                      AND (o.status = 'PROCESSING'                                                                                                                                  
+                           OR (o.status IN ('PENDING','FAIL') AND (o.created_at, o.id) < (r.created_at, r.id))))                                                                    
+  ORDER BY r.created_at, r.id;           
