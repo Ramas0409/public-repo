@@ -1,0 +1,18 @@
+SELECT network, code, plain_name, enabled FROM wdp_ai.reason_code ORDER BY code;
+
+SELECT first_asks FROM wdp_ai.reason_code WHERE network = 'VISA' AND code = '13.1';
+
+SELECT rc.code, t.display_order, t.key, t.label
+FROM wdp_ai.merchant_document_type t JOIN wdp_ai.reason_code rc ON rc.id = t.reason_code_id
+ORDER BY rc.code, t.display_order;
+
+SELECT rc.code, r.code AS row_code, r.merchant_documents
+FROM wdp_ai.requirement r JOIN wdp_ai.reason_code rc ON rc.id = r.reason_code_id
+WHERE cardinality(r.merchant_documents) > 0 ORDER BY rc.code, r.code;
+
+
+SELECT rc.code, count(*) FROM wdp_ai.requirement r JOIN wdp_ai.reason_code rc ON rc.id = r.reason_code_id
+GROUP BY rc.code ORDER BY rc.code;
+
+GRANT SELECT ON wdp_ai.merchant_document_type TO <orchestrator_user>;
+SELECT has_table_privilege('<orchestrator_user>', 'wdp_ai.merchant_document_type', 'SELECT');
