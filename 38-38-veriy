@@ -1,0 +1,80 @@
+1. Step 38: the new column                                                                                                                                                      
+  SELECT column_name, data_type, is_nullable                                                                                                                                      
+  FROM information_schema.columns                                                                                                                                                 
+  WHERE table_schema = 'wdp_ai' AND table_name = 'model_call_usage' AND column_name = 'cache_write_tokens';                                                                       
+  Expected: one row, cache_write_tokens | integer | YES.   
+
+  2. Step 39: catalogue version and first asks per code                                                                                                                           
+  SELECT code, catalogue_version, array_to_string(first_asks, ',') AS first_asks                                                                                                  
+  FROM wdp_ai.reason_code WHERE network = 'VISA' ORDER BY code;                                                                                                                   
+                                                                                                                                                                                  
+  ┌──────┬─────────┬───────────────────────────────────────────────────────────────────┐                                                                                          
+  │ code │ version │                            first asks                             │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 10.4 │ 1.1.0   │ TRANSACTION_HISTORY, PROOF_OF_DELIVERY, ACCOUNT_AND_DEVICE_RECORD │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 12.5 │ 1.4.0   │ ITEMISED_RECEIPT, REFUND_RECORD, CARDHOLDER_CORRESPONDENCE        │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 13.1 │ 1.5.0   │ PROOF_OF_DELIVERY, ORDER_CONFIRMATION, REFUND_RECORD (unchanged)  │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 13.2 │ 1.2.0   │ CANCELLATION_RECORD, USAGE_RECORD, BILLING_TERMS                  │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 13.3 │ 1.2.0   │ PRODUCT_DESCRIPTION, RETURN_RECORD, CARDHOLDER_CORRESPONDENCE     │                                                                                          
+  ├──────┼─────────┼───────────────────────────────────────────────────────────────────┤                                                                                          
+  │ 13.7 │ 1.3.0   │ CANCELLATION_TERMS, CANCELLATION_RECORD, USAGE_RECORD             │                                                                                          
+  └──────┴─────────┴───────────────────────────────────────────────────────────────────┘   
+
+
+  3. Document types, and rows that carry documents, per code                                                                                                                      
+  SELECT rc.code,                                                                                                                                                                 
+         (SELECT count(*) FROM wdp_ai.merchant_document_type t WHERE t.reason_code_id = rc.id) AS types,                                                                          
+         (SELECT count(*) FROM wdp_ai.requirement r WHERE r.reason_code_id = rc.id                                                                                                
+            AND cardinality(r.merchant_documents) > 0) AS rows_with_documents                                                                                                     
+  FROM wdp_ai.reason_code rc WHERE rc.network = 'VISA' ORDER BY rc.code;                                                                                                          
+                                                                                                                                                                                  
+  ┌──────┬───────┬─────────────────────┐                                                                                                                                          
+  │ code │ types │ rows with documents │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 10.4 │ 20    │ 36                  │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 12.5 │ 7     │ 8                   │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 13.1 │ 11    │ 15                  │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 13.2 │ 9     │ 12                  │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 13.3 │ 9     │ 18                  │                                                                                                                                          
+  ├──────┼───────┼─────────────────────┤                                                                                                                                          
+  │ 13.7 │ 8     │ 12                  │                                                                                                                                          
+  └──────┴───────┴─────────────────────┘ 
+
+
+
+   4. Spot checks on two text changes                                                                                                                                              
+  -- 13.2 G9: the "S-120" ending is gone. Expected: 0                                                                                                                             
+  SELECT position('S-120' IN r.does_not_fit)                                                                                                                                      
+  FROM wdp_ai.requirement r JOIN wdp_ai.reason_code rc ON rc.id = r.reason_code_id                                                                                                
+  WHERE rc.code = '13.2' AND r.code = 'G9';                                                                                                                                       
+                                                                                                                                                                                  
+  -- 10.4: three asks name this cardholder's records alone. Expected: three rows, all true                                                                                        
+  SELECT t.key, t.ask_text LIKE '%no other customer%' AS own_records_only                                                                                                         
+  FROM wdp_ai.merchant_document_type t JOIN wdp_ai.reason_code rc ON rc.id = t.reason_code_id                                                                                     
+  WHERE rc.code = '10.4' AND t.key IN ('TRANSACTION_HISTORY', 'ACCOUNT_AND_DEVICE_RECORD', 'DIGITAL_ACCESS_RECORD');                                                              
+                                                                                                                                                                                  
+  5. 13.1 did not move: fingerprints of its vocabulary                                                                                                                            
+  SELECT md5(string_agg(t.key||'|'||t.label||'|'||t.ask_text||'|'||t.why_text||'|'||t.display_order, '#' ORDER BY t.display_order))                                               
+  FROM wdp_ai.merchant_document_type t JOIN wdp_ai.reason_code rc ON rc.id = t.reason_code_id WHERE rc.code = '13.1';                                                             
+  -- expected 54c363125180732277a382edc78a3ac6                                                                                                                                    
+                                                                                                                                                                                  
+  SELECT md5(string_agg(r.code||'|'||coalesce(array_to_string(r.merchant_documents, ','), ''), '#' ORDER BY r.code))                                                              
+  FROM wdp_ai.requirement r JOIN wdp_ai.reason_code rc ON rc.id = r.reason_code_id WHERE rc.code = '13.1';                                                                        
+  -- expected 5bb4ad38a33b7f11eedccf0111e7308a         
+
+
+  6. Overall totals                                                                                                                                                               
+  SELECT (SELECT count(*) FROM wdp_ai.requirement) AS requirements,                                                                                                               
+         (SELECT count(*) FROM wdp_ai.merchant_document_type) AS document_types,                                                                                                  
+         (SELECT count(*) FROM wdp_ai.questionnaire_path) AS paths,                                                                                                               
+         (SELECT count(*) FROM wdp_ai.questionnaire_field) AS fields;                                                                                                             
+  Expected: 180, 64, 65 and 446.                                                                                                                                                  
+                                  
