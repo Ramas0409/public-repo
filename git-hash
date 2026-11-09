@@ -1,0 +1,3 @@
+git hash-object app/core/config.py app/core/postgres/models.py app/models/llm.py app/models/scenario.py app/prompts/scenario_nominator/scenario_prompt.py                       
+  app/services/llm/gateway.py app/services/llm/gateway_llm_client.py app/services/scenario_nominator/contract.py app/services/scenario_nominator/nominator.py                     
+  app/services/usage/pricing.py app/services/usage/recorder.py
