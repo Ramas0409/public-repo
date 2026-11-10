@@ -112,15 +112,23 @@ Query q0 checks the column facts read-only.
 - Percentiles use `percentile_disc`, which returns real observed counts.
 - Cost estimates are relative, from query shape and the folder DDL. Table sizes are unknown (`GDP-SEARCH-GAPS.md` G11).
 
-**Session preamble (run once per session, before any query):**
+**Safety wrapper.** Every query block in §2.3 and §2.4 already starts with these lines; paste each block as it stands:
 ```sql
-BEGIN TRANSACTION READ ONLY;
-SET LOCAL statement_timeout = '<per query, see each header>';
-SET LOCAL lock_timeout = '5s';          -- never wait on someone else's lock
--- … query …
-ROLLBACK;                               -- nothing to commit
+BEGIN TRANSACTION READ ONLY;              -- database refuses any write, even by mistake
+SET LOCAL statement_timeout = '30s';      -- auto-cancel if slower than this (value set per query)
+SET LOCAL lock_timeout = '5s';            -- give up rather than wait behind another session's lock
 ```
-Run each query in its own `BEGIN READ ONLY … ROLLBACK` block so that one timeout does not abort the rest. Prefer a read replica if one exists. Whether the configured URLs point at writer or reader is not determinable (G15).
+`SET LOCAL` only lasts until the transaction ends.
+
+**How to run each block in pgAdmin (Query tool):**
+1. Paste one block (one query only) and press **F5**.
+2. Take the screenshot of **Data Output**. pgAdmin shows only the last statement's result, which is why each block holds a single query and has no `ROLLBACK` at the end.
+3. Clear the editor, run `ROLLBACK;` (F5), then move to the next block.
+4. If a query errors or times out, the transaction is aborted. Run `ROLLBACK;` and start that block again, or record "timeout" in §4.
+
+To run plain `EXPLAIN` first (§3), put `EXPLAIN` on the line directly before the query's first `WITH` / `SELECT`, keeping the three wrapper lines. Run it, screenshot the plan, `ROLLBACK;`, then run the block again without `EXPLAIN`.
+
+Prefer a read replica if one exists. Whether the configured URLs point at writer or reader is not determinable (G15).
 
 ### 2.2 q0 — Column pre-check (run on BOTH databases)
 - **DB:** US and UK. **Question:** do the columns the queries use exist, and with what types?
@@ -144,8 +152,12 @@ If `wdp.action.d_action_processed_est` is missing, skip the `_EST` variants of c
 #### a — ACL rows per consumer, by source system and entity type
 - **DB:** US. **Question:** how many entity values does a consumer send per type, which drives the size of the IN list, and how many consumers are there?
 - **Cost:** light (`wdp.acl` only). **Timeout:** `SET LOCAL statement_timeout = '30s';`
+**a1** — per (source system, entity type): distribution of rows per consumer
 ```sql
--- a1: per (source system, entity type): distribution of rows per consumer
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '30s';
+SET LOCAL lock_timeout = '5s';
+
 WITH per AS (
   SELECT c_consumer_name, c_source_system, c_entity_type, count(*) AS n
   FROM wdp.acl
@@ -163,8 +175,15 @@ SELECT c_source_system, c_entity_type,
 FROM per
 GROUP BY 1, 2
 ORDER BY 1, 2;
+```
+Then `ROLLBACK;`
 
--- a2: per consumer, rows kept by each region filter (ACLUtils rules), plus overall consumer count
+**a2** — per consumer, rows kept by each region filter (ACLUtils rules), plus overall consumer count
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '30s';
+SET LOCAL lock_timeout = '5s';
+
 WITH per AS (
   SELECT c_consumer_name,
          count(*) AS n_all,
@@ -191,9 +210,15 @@ CROSS JOIN LATERAL (VALUES ('all_active_rows', n_all), ('us_kept_rows', n_us_kep
                            ('uk_kept_rows', n_uk_kept), ('duplicate_rows', n_duplicate_rows)) AS m(metric, n)
 GROUP BY m.metric
 ORDER BY m.metric;
+```
+Then `ROLLBACK;`
 
--- a3: rows dropped only because of case (COMP-21 compares entity type case-sensitively;
---     source-system case affects whether PIN is added to the platform list)
+**a3** — rows dropped only because of letter case. COMP-21 compares entity type case-sensitively, and source-system case affects whether PIN is added to the platform list.
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '30s';
+SET LOCAL lock_timeout = '5s';
+
 SELECT
   count(*) FILTER (WHERE c_entity_type NOT IN ('Chain','OrgID','SuperChain','Company ID','Group ID','Outlet ID')
                      AND lower(c_entity_type) IN ('chain','orgid','superchain','company id','group id','outlet id'))
@@ -205,6 +230,8 @@ SELECT
 FROM wdp.acl
 WHERE c_status = 'ACTIVE';
 ```
+Then `ROLLBACK;`
+
 a1 outputs source-system and entity-type labels; these are category codes, not entity values.
 
 #### b — Cases per entity value, per mapped US level column
@@ -213,6 +240,10 @@ a1 outputs source-system and entity-type labels; these are category codes, not e
   - ACL values with zero cases are included as 0.
 - **Cost:** medium. It is one sequential scan of `wdp.case` (no level4/5 index in the folder DDL), plus a hash join to the ACL values. **Timeout:** `SET LOCAL statement_timeout = '10min';`
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '10min';
+SET LOCAL lock_timeout = '5s';
+
 WITH acl_vals AS (            -- US-kept ACL values, mapped to the case column COMP-27 uses
   SELECT DISTINCT
          CASE WHEN c_entity_type IN ('Chain','OrgID') THEN 'C_LEVEL4_ENTITY' ELSE 'C_LEVEL5_ENTITY' END AS level_col,
@@ -255,6 +286,7 @@ FROM joined
 GROUP BY 1, 2
 ORDER BY 1, 2;
 ```
+Then `ROLLBACK;`
 
 #### c — Actions in the last 60 days per entity value
 - **DB:** US. **Question:** how many activity rows, at the COMP-27 count grain of (case, action), does one entity value produce in a maximum-width window?
@@ -265,6 +297,10 @@ ORDER BY 1, 2;
 - **Timeout:** `SET LOCAL statement_timeout = '15min';`
 - **Variants:** run **c-EST** (current code) and **c-PLAIN** (`d_action_processed`), because of the ambiguity in §1.3. The only difference is the one marked line.
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+
 WITH acl_vals AS (
   SELECT DISTINCT
          CASE WHEN c_entity_type IN ('Chain','OrgID') THEN 'C_LEVEL4_ENTITY' ELSE 'C_LEVEL5_ENTITY' END AS level_col,
@@ -311,6 +347,7 @@ FROM joined
 GROUP BY 1, 2
 ORDER BY 1, 2;
 ```
+Then `ROLLBACK;`. For c-PLAIN: comment out the `-- c-EST` line, uncomment the `-- c-PLAIN` line (remove its leading `--`), and run the block again.
 
 #### d — Per-consumer scope size (de-duplicated)
 - **DB:** US. **Question:** for each consumer, how many distinct cases and how many 60-day action rows does its full US ACL scope cover?
@@ -324,6 +361,10 @@ ORDER BY 1, 2;
 - **Cost:** heavy. It does per-consumer joins over `wdp.case` (no level4/5 index), `UNION` de-duplication, and two passes over `wdp.action`. **Timeout:** `SET LOCAL statement_timeout = '30min';`. Run off-peak.
 - **Variants:** as written it uses `d_action_processed_est`. For **d-PLAIN**, swap the one marked line.
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '30min';
+SET LOCAL lock_timeout = '5s';
+
 WITH acl_us AS (
   SELECT DISTINCT c_consumer_name, c_source_system, c_entity_type, c_entity_value
   FROM wdp.acl
@@ -397,6 +438,8 @@ CROSS JOIN LATERAL (VALUES ('cases', n_cases), ('actions_60d', n_actions_60d),
 GROUP BY GROUPING SETS ((route_cases_activities, m.metric), (m.metric))
 ORDER BY 1, 2;
 ```
+Then `ROLLBACK;`. For d-PLAIN: comment out the `-- d-EST` line, uncomment the `-- d-PLAIN` line, and run again.
+
 `EMPTY_200` and `DS` consumers never reach COMP-27 through `/cases/activities`. Their rows show the scope they would have through `/us/cases/activities`.
 
 #### e — Actions per day overall, last 60 days
@@ -410,6 +453,10 @@ ORDER BY 1, 2;
 - **Timeout:** `SET LOCAL statement_timeout = '10min';`
 - **Variants:** **e-EST** / **e-PLAIN**. Swap both marked lines together.
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '10min';
+SET LOCAL lock_timeout = '5s';
+
 WITH days AS (
   SELECT d::date AS d
   FROM generate_series(current_date - 60, current_date, interval '1 day') AS g(d)
@@ -423,8 +470,9 @@ per_day AS (
          count(*)                                                             AS n_unfiltered
   FROM wdp.action a
   JOIN wdp."case" c ON c.i_case_id = a.i_case_id
-  WHERE a.d_action_processed_est BETWEEN current_date - 60 AND current_date            -- e-EST
-     -- a.d_action_processed     BETWEEN current_date - 60 AND current_date            -- e-PLAIN
+  WHERE 1 = 1
+    AND a.d_action_processed_est BETWEEN current_date - 60 AND current_date            -- e-EST
+ -- AND a.d_action_processed     BETWEEN current_date - 60 AND current_date            -- e-PLAIN
   GROUP BY 1
 )
 SELECT m.metric,
@@ -443,6 +491,7 @@ CROSS JOIN LATERAL (VALUES ('filtered', coalesce(p.n_filtered, 0)),
 GROUP BY m.metric
 ORDER BY m.metric;
 ```
+Then `ROLLBACK;`. For e-PLAIN, do this for **both** marked pairs (the `SELECT … AS d` pair and the `WHERE` pair): comment out the `-- e-EST` line and uncomment the `-- e-PLAIN` line. Then run again.
 
 ---
 
@@ -458,6 +507,10 @@ Partner scope (no entity filter, `C_PRODUCT_TYPE` only) is not sized here, on ei
 - **DB:** UK. **Question:** how many cases sit behind one Company / Group / Outlet value? This covers all values in each column, because there is no ACL in this database.
 - **Cost:** medium (one sequential scan of `nap.case`; `nap` index coverage not determinable). **Timeout:** `SET LOCAL statement_timeout = '10min';`
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '10min';
+SET LOCAL lock_timeout = '5s';
+
 WITH base AS (
   SELECT c.c_level2_entity, c.c_level4_entity, c.c_level5_entity
   FROM nap."case" c
@@ -486,11 +539,16 @@ FROM per_value
 GROUP BY 1
 ORDER BY 1;
 ```
+Then `ROLLBACK;`
 
 #### g — Actions in the last 60 days per entity value
 - **DB:** UK. **Question:** how many activity rows, at the (case, action) grain, does one value produce in a maximum-width window? The UK date column is `D_ACTION_PROCESSED` (§1.3).
 - **Cost:** medium–heavy (60-day action slice joined to `nap.case`). **Timeout:** `SET LOCAL statement_timeout = '15min';`
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+
 WITH base AS (
   SELECT c.c_level2_entity, c.c_level4_entity, c.c_level5_entity
   FROM nap."action" a
@@ -522,12 +580,18 @@ FROM per_value
 GROUP BY 1
 ORDER BY 1;
 ```
+Then `ROLLBACK;`
+
 Values with zero actions in the window do not appear here. The number of values with cases comes from f (`n_values`).
 
 #### h — Actions per day overall, last 60 days
 - **DB:** UK. **Question:** what is the UK date-first baseline per day, including zero days, filtered vs unfiltered?
 - **Cost:** medium. **Timeout:** `SET LOCAL statement_timeout = '10min';`
 ```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '10min';
+SET LOCAL lock_timeout = '5s';
+
 WITH days AS (
   SELECT d::date AS d
   FROM generate_series(current_date - 60, current_date, interval '1 day') AS g(d)
@@ -559,6 +623,7 @@ CROSS JOIN LATERAL (VALUES ('filtered', coalesce(p.n_filtered, 0)),
 GROUP BY m.metric
 ORDER BY m.metric;
 ```
+Then `ROLLBACK;`
 
 ---
 
@@ -571,7 +636,7 @@ ORDER BY m.metric;
 
 | Step | Query | DB | Cost | Timeout |
 |---|---|---|---|---|
-| 1 | q0 column pre-check | US, UK | light | 10s |
+| 1 | q0 column pre-check | US, UK | light | 10s — **done 2026-11-10 — US 16 rows (0.565s), UK 10 rows (0.635s)** |
 | 2 | a1, a2, a3 | US | light | 30s |
 | 3 | e-PLAIN | US | medium | 10min |
 | 4 | e-EST (skip if q0 shows column missing) | US | medium | 10min |
@@ -602,9 +667,55 @@ Record for the whole run:
 
 **q0 — columns** (one row per column found; list any expected column that is missing)
 
-| schema | table | column | data_type |
-|---|---|---|---|
-| | | | |
+*US database — received 2026-11-10. pgAdmin connection label `wdpdisputedatabase … @US-prod`; screenshot timestamp 3:41 PM. "Total rows: 16 of 16", query time 00:00:00.565. Source: `images/img.png`, `images/img_1.png`.*
+
+| # | schema | table | column | data_type |
+|---|---|---|---|---|
+| 1 | wdp | acl | c_consumer_name | character varying |
+| 2 | wdp | acl | c_entity_type | character varying |
+| 3 | wdp | acl | c_entity_value | character varying |
+| 4 | wdp | acl | c_source_system | character varying |
+| 5 | wdp | acl | c_status | character varying |
+| 6 | wdp | action | c_action_sta | character varying |
+| 7 | wdp | action | c_migration_sta | character varying |
+| 8 | wdp | action | d_action_processed | date |
+| 9 | wdp | action | d_action_processed_est | date |
+| 10 | wdp | action | i_case_id | bigint |
+| 11 | wdp | case | c_acq_platform | character varying |
+| 12 | wdp | case | c_case_sta | character varying |
+| 13 | wdp | case | c_level2_entity | character varying |
+| 14 | wdp | case | c_level4_entity | character varying |
+| 15 | wdp | case | c_level5_entity | character varying |
+| 16 | wdp | case | i_case_id | bigint |
+
+What the US result shows:
+- All 16 expected `wdp` columns are present. No `nap` rows came back, as expected on the US database; the `nap` schema is in the UK database.
+- **`wdp.action.d_action_processed_est` exists in US-prod as `date`.** The `_EST` variants (c-EST, d-EST, e-EST) can therefore run. q0 does not show whether the column is populated for the 61-day window; e-EST vs e-PLAIN `total_61d` will show that.
+- `d_action_processed` is `date`, the same as `SQL/action.sql:17`. The `BETWEEN` window has no timestamp truncation issue on US.
+- `d_action_processed_est` is the one column here that is in production but not in the folder DDL (`SQL/action.sql` has no such column). This confirms the folder DDL is behind production for `wdp.action` (`GDP-SEARCH-GAPS.md` G5, G9). The trigger `trg_action_est_date`, and whether historic rows were backfilled, are not shown by q0.
+
+*UK database — received 2026-11-10. pgAdmin connection label `napdisputedatabase … @UK-prod`; screenshot timestamp 4:29 PM. "Total rows: 10 of 10", query time 00:00:00.635. Source: `images/img_2.png`.*
+
+| # | schema | table | column | data_type |
+|---|---|---|---|---|
+| 1 | nap | action | c_action_sta | character varying |
+| 2 | nap | action | c_migration_sta | character varying |
+| 3 | nap | action | d_action_processed | date |
+| 4 | nap | action | i_case_id | bigint |
+| 5 | nap | case | c_acq_platform | character varying |
+| 6 | nap | case | c_case_sta | character varying |
+| 7 | nap | case | c_level2_entity | character varying |
+| 8 | nap | case | c_level4_entity | character varying |
+| 9 | nap | case | c_level5_entity | character varying |
+| 10 | nap | case | i_case_id | bigint |
+
+What the UK result shows:
+- All 10 `nap` columns that queries f, g and h use are present, with names exactly as in the COMP-27 SQL. The `nap` column names are now confirmed from production, not only from source (§1.3, §2.4).
+- **`nap.action.d_action_processed` is `date`.** The 60-day `BETWEEN` window has no timestamp truncation issue on UK. The `::date` cast in query h is harmless.
+- No `nap.action.d_action_processed_est`. This is expected: the UK path filters on `D_ACTION_PROCESSED` (`C27/dao/impl/UKDisputeCaseSearchDAOImpl.java:869-874`).
+- No `acl` table and no `wdp` rows came back. This is consistent with the brief: `wdp.acl` exists only in the US database. It also confirms that a UK per-consumer figure needs the offline method in §5.
+- `nap.action.c_migration_sta` exists. This is the column behind COMP-27's UK `A.C_MIGRATION_STA = ?` filter (`…UKDisputeCaseSearchDAOImpl.java:844-847`).
+- `i_case_id` is `bigint` in both `nap.case` and `nap.action`, so the join key types match.
 
 **a1 — ACL rows per consumer by source system × entity type**
 
