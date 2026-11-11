@@ -200,6 +200,22 @@ ORDER BY 1;
 ```
 On UK this is expected to return no rows. Record "0 rows" in that case.
 
+### B1.5b (US only; added 2026-11-11): full body of `wdp.set_d_action_processed_est()`
+**Why:** the B1.5 grid showed only the first line of the function. This query returns one row per line of its source.
+- **Run time class:** instant (catalog only).
+- **Result file:** export to `images/B1.5b-us.csv`; it is appended to `results/b1-us-indexes.txt` under `### B1.5b`.
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '30s';
+SET LOCAL lock_timeout = '5s';
+
+SELECT t.line_no, t.line
+FROM regexp_split_to_table(pg_get_functiondef('wdp.set_d_action_processed_est()'::regprocedure), E'\n')
+     WITH ORDINALITY AS t(line, line_no)
+ORDER BY t.line_no;
+```
+Then run `ROLLBACK;`.
+
 ### B1.6 Column list with types, defaults and generation (all three tables, both schemas)
 This is the only `nap` DDL source, because the folder has none.
 ```sql
@@ -234,6 +250,38 @@ WHERE schemaname IN ('wdp','nap')
                   'c_level1_entity','c_level2_entity','c_level4_entity','c_level5_entity','i_case')
 ORDER BY 1, 2, 3;
 ```
+
+### B1.7b (US only; added 2026-11-11 after B1.7): `d_action_processed_est` coverage by month
+**Why:** B1.7 shows `null_frac` = 0.435 for `wdp.action.d_action_processed_est`, so about 43% of action rows have no EST date. US activities filters on that column (Part A §A1, §A7), so any window that falls where it is NULL returns nothing for those rows.
+- This query shows **from which month** the column is filled.
+- It also tests whether the filled values follow the rule "Eastern date of `z_insrt` read as UTC", without needing B1.5b.
+- The output is counts only.
+- **Run time class:** medium–heavy (one full pass over `wdp.action`, 21 GB). Use a replica or run off-peak.
+- **Result file:** append to `results/b1-us-indexes.txt` under `### B1.7b`.
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '20min';
+SET LOCAL lock_timeout = '5s';
+
+SELECT date_trunc('month', a.d_action_processed)::date                                   AS month_plain,
+       count(*)                                                                          AS n_rows,
+       count(*) FILTER (WHERE a.d_action_processed_est IS NULL)                          AS n_est_null,
+       round(100.0 * count(*) FILTER (WHERE a.d_action_processed_est IS NULL) / count(*), 2) AS pct_est_null,
+       count(*) FILTER (WHERE a.d_action_processed_est = a.d_action_processed)           AS n_est_eq_plain,
+       count(*) FILTER (WHERE a.d_action_processed_est = a.d_action_processed - 1)       AS n_est_plain_minus_1,
+       count(*) FILTER (WHERE a.d_action_processed_est IS NOT NULL
+                          AND a.d_action_processed_est NOT IN (a.d_action_processed, a.d_action_processed - 1)) AS n_est_other,
+       count(*) FILTER (WHERE a.d_action_processed_est IS NOT NULL
+                          AND a.d_action_processed_est <> (a.z_insrt AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York')::date) AS n_est_not_rule,
+       count(*) FILTER (WHERE a.z_insrt IS NULL)                                         AS n_zinsrt_null
+FROM wdp.action a
+GROUP BY 1
+ORDER BY 1 NULLS FIRST;
+```
+How to read it:
+- `pct_est_null` drops to about 0 from the month the trigger and backfill cover.
+- `n_est_not_rule` = 0 means every filled value matches the proposal's rule.
+- `n_est_plain_minus_1` shows how often the Eastern date falls one day before the plain date.
 
 ### B1.8 Optional: does the running COMP-27 SQL filter on `_EST`? (`pg_stat_statements`, no values)
 This settles Part A §A9 from the database side. It outputs **flags and totals only**, never query text. `pg_stat_statements` replaces every constant with `$n`, and the bound entity values never appear.
@@ -542,7 +590,9 @@ SELECT C.I_CASE as caseNumber
   A.a_cnverted_dispute_amt as convertedDisputeAmount,A.c_cnverted_dispute_amt_currency as convertedDisputeAmountCurrency,A.a_cnverted_dispute_exponent as convertedDisputeAmountExponent,
   A.a_post_amt as disputeSettlementAmount,A.c_post_currency as disputeSettlementAmountCurrency,A.c_post_amt_exponent as disputeSettlementAmountExponent,c.d_cse_ready as caseReadyDate, A.C_ACTION_STA as actionStatus,
   C.I_TICKET_NUMBER as ticketNumber, C.C_AUTH_TR as authCode, A.i_action_id as actionId, C.D_TR_TIMESTAMP as transactionTimestamp, A.c_reason_category as reasonCategory, C.i_pan_first6_last4 as panFirst6Last4, A.z_insrt as actionTimestamp,
-  C.c_au_pan as accountUpdaterPAN, C.c_au_hash_pan as accountUpdaterHashPAN, A.x_insrt as createdBy, A.x_updt as lastUpdatedBy, A.x_insrt_display as insertedDisplayId, A.x_updt_display as updatedDisplayId, C.C_CUST_FIELD1 as customerField1, C.T_CUST_DSCRTN_2 as customerField2, C.T_CUST_DSCRTN_3 as customerField3, A.C_FUNCTION_CODE as functionCode,
+  C.c_au_pan as accountUpdaterPAN, C.c_au_hash_pan as accountUpdaterHashPAN, A.x_insrt as createdBy, A.x_updt as lastUpdatedBy, A.x_insrt_display as insertedDisplayId, A.x_updt_display as updatedDisplayId, C.C_CUST_FIELD1 as customerField1, C.T_CUST_DSCRTN_2 as customerField2,
+  -- C.T_CUST_DSCRTN_3 as customerField3,   -- in the code (UK DAO :361) but NOT in UK-prod (B1.6, 2026-11-11); left out so the plan can run
+  A.C_FUNCTION_CODE as functionCode,
   CASE WHEN cl.i_case IS NOT NULL THEN 'Y' ELSE NULL END AS caseLock,
   cl.locked_by AS lockedBy
 , case
@@ -973,6 +1023,12 @@ EXPLAIN (ANALYZE, BUFFERS, SETTINGS)
 | ☐ | `b3-uk-largest-60d-page.txt` | B3.2 #16 | UK |
 
 **Not saved, by design:** the B3.1-US output, the B3.1-UK step 1 cell and the step 2 output.
+
+**Still to run at the end (status 2026-11-11):**
+- **B1.5b (US only, required):** see section B1.5b above.
+- **B1.7b (US only, heavy, off-peak):** see section B1.7b above.
+- **B1.8:** done. `pg_stat_statements` is not installed in US or UK.
+- **B3.0-check** does not need running: it was computed from B1.6 on 2026-11-11. US has 0 missing columns. UK has 1 missing, `nap.case.t_cust_dscrtn_3`, which is now commented out in the UK page SQL.
 
 **Suggested order:**
 1. B1 on both regions, including B3.0-check.
