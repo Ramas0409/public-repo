@@ -149,6 +149,24 @@ ORDER BY 1, 2;
 ```
 Then run `ROLLBACK;`.
 
+### B1.2c (load only; added 2026-11-12): UK activity-date coverage, full history
+B1.2b in load found only 2 UK actions since 2026-05-01 (the last on 2026-06-12), so the UK window has to be placed inside the months load actually holds. This block returns monthly counts for the whole of `nap.action`, plus the null count. Counts and dates only, so it can be saved: `docs/results-phase1/load/l1-load-date-coverage.txt`, under `### B1.2c`. **Run time class:** medium; it scans `nap.action`, 3.0 GB in load.
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+
+SELECT date_trunc('month', d_action_processed)::date AS month,
+       count(*)                AS actions,
+       min(d_action_processed) AS min_processed,
+       max(d_action_processed) AS max_processed,
+       max(z_insrt)            AS max_insert
+FROM nap.action
+GROUP BY 1
+ORDER BY 1;
+```
+Then run `ROLLBACK;`. The NULL month row, if any, counts actions with no processed date.
+
 ### B1.3 Constraints (PK, unique, FK, check), including FKs from other tables that point at these
 ```sql
 BEGIN TRANSACTION READ ONLY;

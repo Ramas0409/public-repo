@@ -41,6 +41,10 @@ Notes:
 - **If load has no read replica:** run on the load writer, and record `pg_is_in_recovery = false` in the file header. P0 will then show `is_replica = f`, which is expected.
 - **Before/after comparisons stay within one environment.** The report compares load L2 (before) with load L4 (after). Prod B3 (`docs/results/`) is then context only.
 - **Load can differ from prod** even with the same data: `pg_stats`, the all-visible share, cache size and hardware. L1 records the first two, and the report states them next to each number.
+- **Load dates (from FINALIZE B1.2b, 2026-11-12).** The pickers' `to_date` / `from_date_*` (based on `current_date`) do **not** apply in load.
+  - **US load data ends on 2026-10-06**, a partial day (inserts until about 06:35 UTC). In load, use `<TO_DATE>` = `2026-10-05`, 2-day `<FROM_DATE>` = `2026-10-04` and 60-day `<FROM_DATE>` = `2026-08-06`, both in L2 (B3.2) and in L4.
+  - **UK load has only 2 actions since 2026-05-01.** The UK window is set from FINALIZE B1.2c: pick the last complete day of a month with normal volume.
+  - The `cap_*` values do not change, because they depend only on the number of days.
 
 **Where the SQL comes from.** The SQL here was **generated from the code**, not typed by hand:
 - the old path is produced by the unchanged shared builder (`USDisputeCaseSearchDAOImpl` / `UKDisputeCaseSearchDAOImpl.buildDynamicSearchQuery`, as the activities endpoint calls it);
