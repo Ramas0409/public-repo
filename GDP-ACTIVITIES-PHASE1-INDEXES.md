@@ -447,6 +447,37 @@ ANALYZE nap.case_lock;
 ```
 Then re-run FINALIZE B1.2 in load. Compared with prod B1.2, it should differ only in sizes and scan counts, plus the A3 indexes if you kept them.
 
+### A5. US (`wdp`): foreign key `action.i_case_id → case.i_case_id` (load only)
+Load B1.3 (2026-11-12) shows **no constraints at all on `wdp.action`**. Prod has `fk_case` there (prod B1.3), and load UK has its `fk_case`.
+- **Why it matters:** PostgreSQL uses validated foreign keys to estimate how many rows a join on those columns returns. Old and new activities SQL both join `action` to `case` on `i_case_id`, so without the key, load US join estimates, and with them plans, can differ from prod's.
+- Primary-key and unique *constraints* are not needed. The unique indexes from A1/A2 give the planner the same uniqueness, so only the foreign key is added.
+- The key is added `NOT VALID` first, which is quick, then validated. Validation reads both tables but lets reads and writes continue. The planner only uses a key once it is validated.
+
+**A5.0 Pre-check (read-only):** `action` rows whose case does not exist. Must be **0**, or validation fails. **Run time class:** medium (anti-join of 26.7 M actions to 6.7 M cases).
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+SELECT count(*) AS orphan_actions
+FROM wdp.action a
+WHERE NOT EXISTS (SELECT 1 FROM wdp."case" c WHERE c.i_case_id = a.i_case_id);
+```
+Then run `ROLLBACK;`. If `orphan_actions` > 0, stop and send me the count. The options would be to keep the key `NOT VALID` (ignored by the planner, so no gain) or to skip A5.
+
+**A5.1 Add and validate.** Run with auto-commit on, one statement at a time, after A5.0 returns 0:
+```sql
+SET statement_timeout = 0;
+SET lock_timeout = '5s';
+ALTER TABLE wdp.action ADD CONSTRAINT fk_case FOREIGN KEY (i_case_id) REFERENCES wdp."case" (i_case_id) NOT VALID;
+ALTER TABLE wdp.action VALIDATE CONSTRAINT fk_case;
+```
+Check: re-run FINALIZE B1.3. `wdp.action fk_case` should show `validated = true`.
+
+**Rollback (A5):**
+```sql
+ALTER TABLE wdp.action DROP CONSTRAINT IF EXISTS fk_case;
+```
+
 ---
 
 ## Verifying each index (writer, then every read replica)
