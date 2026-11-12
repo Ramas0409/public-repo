@@ -182,6 +182,190 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_action_processed_actionid_sta
 
 ---
 
+## LOAD ONLY — align the load environment's indexes with prod (never run in prod)
+
+Source: load B1.2 (`docs/results-phase1/load/l1-load-inventory.txt`), compared with prod B1.2 (`docs/results/b1-*.txt`, report §2). Load keeps `wdp` and `nap` in **one database**, so every statement below runs on the same connection.
+
+**Order matters for a fair before/after in load:**
+1. Run **A1–A3** (indexes prod has but load lacks).
+2. Run A4 (`ANALYZE`).
+3. Take the load baseline: FINALIZE B3.1 + B3.2, step L2 in VERIFY-SQL §0.1.
+4. **Only then** build the Phase 1 indexes US-1…UK-7 above.
+
+If A1–A3 and US-1…UK-7 are built together, load has no "before" with prod's index set, and the only "before" left is prod B3.
+
+### A0. Pre-checks for the unique indexes (read-only)
+A unique build fails if load holds duplicates; load was copied without these constraints. Each query should return **0 rows**. **Run time class:** medium (GROUP BY over 26.7 M / 13.2 M rows).
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+SELECT 'wdp.action i_action_id' AS chk, count(*) AS duplicate_keys FROM (
+  SELECT i_action_id FROM wdp.action GROUP BY 1 HAVING count(*) > 1) d
+UNION ALL
+SELECT 'wdp.action (i_case, i_action_seq)', count(*) FROM (
+  SELECT i_case, i_action_seq FROM wdp.action GROUP BY 1, 2 HAVING count(*) > 1) d
+UNION ALL
+SELECT 'nap.action (i_case, i_action_seq)', count(*) FROM (
+  SELECT i_case, i_action_seq FROM nap.action GROUP BY 1, 2 HAVING count(*) > 1) d
+UNION ALL
+SELECT 'wdp.case_lock i_case', count(*) FROM (
+  SELECT i_case FROM wdp.case_lock GROUP BY 1 HAVING count(*) > 1) d
+UNION ALL
+SELECT 'nap.case_lock i_case', count(*) FROM (
+  SELECT i_case FROM nap.case_lock GROUP BY 1 HAVING count(*) > 1) d;
+```
+Then run `ROLLBACK;`. Interpreting the result:
+- Every `duplicate_keys` should be **0**.
+- If a check shows **> 0**, do not build that unique index. Build it as a plain index (same columns, without `UNIQUE`) and note it. The planner then lacks the uniqueness guarantee, which matters for `case_lock` (the lock join).
+
+### A1. US (`wdp`): indexes in prod, missing in load
+
+Prod names and key columns as in report §2.1–§2.3.
+- In prod, `pin_action_pkey`, `uq_action_case_action_seq` and `case_lock_unique` are **constraints** (primary key / unique) backed by these indexes. A unique index alone gives the planner the same access path and uniqueness.
+- Attaching them as constraints (`ALTER TABLE … ADD CONSTRAINT … USING INDEX`) is optional, and not needed for these tests.
+
+| # | Prod index | Why it matters for activities |
+|---|---|---|
+| A1.1 | `pin_action_pkey (i_action_id)`, PK | **Required.** The new page fetches its rows by `i_action_id`; without it, load scans `action` |
+| A1.2 | `uq_action_case_action_seq (i_case, i_action_seq)`, unique | not used by the activities SQL; kept for parity |
+| A1.3 | `ix_action_processed_actionid_case (d_action_processed, i_action_id, i_case_id)` | not used by US activities (US filters on EST); parity, and UI date searches |
+| A1.4 | `ix_action_status_owner_processed_actionid_case (c_action_sta, c_ownr, d_action_processed, i_action_id, i_case_id)` | parity |
+| A1.5 | `ix_case_liability (c_case_final_liability)` | parity |
+| A1.6 | `case_lock_unique (i_case)`, unique | **Required.** The lock join on `i_case`; load US `case_lock` has 66,481 rows and no index on `i_case` |
+| A1.7 | `idx_case_lock_i_case (i_case)` | duplicate of A1.6 in prod (candidate to retire); kept for parity |
+
+```sql
+-- session settings, as in "Common build procedure"
+SET statement_timeout = 0;
+SET lock_timeout = '5s';
+
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS pin_action_pkey
+    ON wdp.action (i_action_id);
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS uq_action_case_action_seq
+    ON wdp.action (i_case, i_action_seq);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_action_processed_actionid_case
+    ON wdp.action (d_action_processed, i_action_id, i_case_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_action_status_owner_processed_actionid_case
+    ON wdp.action (c_action_sta, c_ownr, d_action_processed, i_action_id, i_case_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_case_liability
+    ON wdp."case" (c_case_final_liability);
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS case_lock_unique
+    ON wdp.case_lock (i_case);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_case_lock_i_case
+    ON wdp.case_lock (i_case);
+```
+Each statement runs on its own (CONCURRENTLY cannot run inside a transaction block). If a build fails, run V3 and the rollback statement, then retry.
+
+**Rollback (A1):**
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS wdp.pin_action_pkey;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.uq_action_case_action_seq;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.ix_action_processed_actionid_case;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.ix_action_status_owner_processed_actionid_case;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.ix_case_liability;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.case_lock_unique;
+DROP INDEX CONCURRENTLY IF EXISTS wdp.idx_case_lock_i_case;
+```
+
+### A2. UK (`nap`): indexes in prod, missing in load
+
+| # | Prod index | Why |
+|---|---|---|
+| A2.1 | `uq_action_case_action_seq (i_case, i_action_seq)`, unique | parity (not used by activities) |
+| A2.2 | `case_lock_unique (i_case)`, unique | the lock join; UK load `case_lock` has 3 rows, so the effect is small |
+| A2.3 | `idx_case_lock_i_case (i_case)` | duplicate of A2.2 in prod; parity |
+
+```sql
+SET statement_timeout = 0;
+SET lock_timeout = '5s';
+
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS uq_action_case_action_seq
+    ON nap.action (i_case, i_action_seq);
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS case_lock_unique
+    ON nap.case_lock (i_case);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_case_lock_i_case
+    ON nap.case_lock (i_case);
+```
+**Rollback (A2):**
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS nap.uq_action_case_action_seq;
+DROP INDEX CONCURRENTLY IF EXISTS nap.case_lock_unique;
+DROP INDEX CONCURRENTLY IF EXISTS nap.idx_case_lock_i_case;
+```
+
+### A3. UK (`nap`): indexes in load that prod does not have — optional set-aside
+
+Load UK has 12 indexes that prod UK lacks: 8 on `action`, 4 on `case`. Several already cover what UK-4…UK-7 add, so a UK "before" in load will **not** show prod's full scans of `case`.
+- To reproduce prod's UK baseline, drop them before L2.
+- Recreate them afterwards if other load testing needs them. The definitions below are copied exactly from load B1.2.
+- **Check with whoever owns load testing before dropping.** The usage counts are non-zero for most (load B1.2 `idx_scan`).
+
+| Load-only index | Definition (load B1.2) | Size |
+|---|---|---|
+| `nap.action_c_action_sta_action_type_idx` | `(c_action_sta, c_ownr, c_action_type, d_action_processed)` | 67 MB |
+| `nap.action_c_action_sta_idx` | `(c_action_sta, c_ownr, d_action_processed)` | 66 MB |
+| `nap.action_c_case_stage_idx` | `(c_case_stage, c_action_type, d_action_processed)` | 66 MB |
+| `nap.action_d_action_processed_idx` | `(d_action_processed)` | 64 MB |
+| `nap.action_d_action_processed_idx_action_sta_case_id` | `(d_action_processed, c_action_sta, i_case_id)` | 334 MB |
+| `nap.idx_nap_action_processed_status` | `(d_action_processed, c_action_sta, i_case_id, i_action_id)` | 456 MB |
+| `nap.idx_nap_action_status_processed` | `(c_action_sta, d_action_processed, i_case_id, i_action_id)` | 456 MB |
+| `nap.ix_action_case_reported` | `(i_case_id, d_action_reported) INCLUDE (a_dispute_amt, i_action_seq, c_case_stage, c_action_type, c_pre_note, c_action_sta)` | 617 MB |
+| `nap.case_c_level4_entity_idx` | `(c_level4_entity)` | 46 MB |
+| `nap.case_c_level5_entity_idx` | `(c_level5_entity)` | 45 MB |
+| `nap.idx_nap_case_platform_status_entity` | `(c_acq_platform, c_case_sta, c_level4_entity, c_level5_entity)` | 22 MB |
+| `nap.ix_case_entity_platform` | `(c_level4_entity, c_acq_platform, i_case_id) INCLUDE (i_case_action_max_seq, c_case_sta, c_tr_type, c_case_final_liability)` | 215 MB |
+
+
+**Set aside (drop) — only if agreed:**
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS nap.action_c_action_sta_action_type_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.action_c_action_sta_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.action_c_case_stage_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.action_d_action_processed_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.action_d_action_processed_idx_action_sta_case_id;
+DROP INDEX CONCURRENTLY IF EXISTS nap.idx_nap_action_processed_status;
+DROP INDEX CONCURRENTLY IF EXISTS nap.idx_nap_action_status_processed;
+DROP INDEX CONCURRENTLY IF EXISTS nap.ix_action_case_reported;
+DROP INDEX CONCURRENTLY IF EXISTS nap.case_c_level4_entity_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.case_c_level5_entity_idx;
+DROP INDEX CONCURRENTLY IF EXISTS nap.idx_nap_case_platform_status_entity;
+DROP INDEX CONCURRENTLY IF EXISTS nap.ix_case_entity_platform;
+```
+**Recreate (rollback of A3), exact load definitions:**
+```sql
+SET statement_timeout = 0;
+SET lock_timeout = '5s';
+CREATE INDEX CONCURRENTLY IF NOT EXISTS action_c_action_sta_action_type_idx ON nap.action USING btree (c_action_sta, c_ownr, c_action_type, d_action_processed);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS action_c_action_sta_idx ON nap.action USING btree (c_action_sta, c_ownr, d_action_processed);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS action_c_case_stage_idx ON nap.action USING btree (c_case_stage, c_action_type, d_action_processed);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS action_d_action_processed_idx ON nap.action USING btree (d_action_processed);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS action_d_action_processed_idx_action_sta_case_id ON nap.action USING btree (d_action_processed, c_action_sta, i_case_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_nap_action_processed_status ON nap.action USING btree (d_action_processed, c_action_sta, i_case_id, i_action_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_nap_action_status_processed ON nap.action USING btree (c_action_sta, d_action_processed, i_case_id, i_action_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_action_case_reported ON nap.action USING btree (i_case_id, d_action_reported) INCLUDE (a_dispute_amt, i_action_seq, c_case_stage, c_action_type, c_pre_note, c_action_sta);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS case_c_level4_entity_idx ON nap."case" USING btree (c_level4_entity);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS case_c_level5_entity_idx ON nap."case" USING btree (c_level5_entity);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_nap_case_platform_status_entity ON nap."case" USING btree (c_acq_platform, c_case_sta, c_level4_entity, c_level5_entity);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_case_entity_platform ON nap."case" USING btree (c_level4_entity, c_acq_platform, i_case_id) INCLUDE (i_case_action_max_seq, c_case_sta, c_tr_type, c_case_final_liability);
+```
+
+US load has no index that prod lacks.
+
+### A4. Refresh statistics after A1–A3 (load)
+UK `action` was last analyzed 2026-04-03 (load B1.1: 9.6 M estimated rows against 13.2 M live). `ANALYZE` updates planner statistics only; it does not change data. VACUUM is deliberately not included: it would raise the all-visible share well above prod's, see "Visibility limit".
+```sql
+ANALYZE wdp.action;
+ANALYZE wdp."case";
+ANALYZE wdp.case_lock;
+ANALYZE nap.action;
+ANALYZE nap."case";
+ANALYZE nap.case_lock;
+```
+Then re-run FINALIZE B1.2 in load. Compared with prod B1.2, it should differ only in sizes and scan counts, plus the A3 indexes if you kept them.
+
+---
+
 ## Verifying each index (writer, then every read replica)
 
 Replace `<schema>` / `<index>`.
