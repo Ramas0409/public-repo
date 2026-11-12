@@ -167,6 +167,32 @@ ORDER BY 1;
 ```
 Then run `ROLLBACK;`. The NULL month row, if any, counts actions with no processed date.
 
+### B1.2d (load only; added 2026-11-12): duplicate lock rows in `wdp.case_lock`
+Load A0 (`GDP-ACTIVITIES-PHASE1-INDEXES.md`, "LOAD ONLY") found 20 cases with more than one `wdp.case_lock` row. In prod that is impossible (`case_lock_unique (i_case)`, B1.3). This block measures them before they are removed (INDEXES A0b, option 1).
+- Counts and timestamps only, no case numbers, so it can be saved: `docs/results-phase1/load/l1-load-caselock-dups.txt`.
+- **Run time class:** light (66 k rows).
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '2min';
+SET LOCAL lock_timeout = '5s';
+
+SELECT count(*)                            AS duplicate_cases,
+       sum(n) - count(*)                   AS extra_lock_rows,
+       max(n)                              AS max_rows_per_case,
+       count(*) FILTER (WHERE same_locker) AS dups_same_locked_by,
+       min(min_locked_at)                  AS earliest_locked_at,
+       max(max_locked_at)                  AS latest_locked_at
+FROM (
+  SELECT i_case, count(*) AS n,
+         count(DISTINCT locked_by) = 1 AS same_locker,
+         min(locked_at) AS min_locked_at, max(locked_at) AS max_locked_at
+  FROM wdp.case_lock
+  GROUP BY i_case
+  HAVING count(*) > 1
+) d;
+```
+Then run `ROLLBACK;`. Expected: `duplicate_cases` = 20, as in A0. `extra_lock_rows` is the number of rows A0b will remove.
+
 ### B1.3 Constraints (PK, unique, FK, check), including FKs from other tables that point at these
 ```sql
 BEGIN TRANSACTION READ ONLY;

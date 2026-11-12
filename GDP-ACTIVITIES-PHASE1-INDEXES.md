@@ -219,6 +219,63 @@ Then run `ROLLBACK;`. Interpreting the result:
 - Every `duplicate_keys` should be **0**.
 - If a check shows **> 0**, do not build that unique index. Build it as a plain index (same columns, without `UNIQUE`) and note it. The planner then lacks the uniqueness guarantee, which matters for `case_lock` (the lock join).
 
+### A0 result in load (2026-11-12) and A0b (option 1, chosen)
+
+| Check | Duplicate keys | Action |
+|---|---|---|
+| `wdp.action i_action_id` | 0 | build A1.1 as written |
+| `wdp.action (i_case, i_action_seq)` | **1** | build **A1.2 without `UNIQUE`** (statement below); activities does not use it |
+| `wdp.case_lock i_case` | **20** | **A0b**: remove the extra lock rows, keeping one per case, then build A1.6 as unique |
+| `nap.action (i_case, i_action_seq)` | 0 | A2.1 as written |
+| `nap.case_lock i_case` | 0 | A2.2 as written |
+
+A1.2 for load, replacing the unique statement in A1:
+```sql
+CREATE INDEX CONCURRENTLY IF NOT EXISTS uq_action_case_action_seq
+    ON wdp.action (i_case, i_action_seq);   -- load: not unique (1 duplicate key, A0); prod has it as UNIQUE
+```
+
+#### A0b. Remove duplicate `wdp.case_lock` rows (load only; data change, backed up)
+**Why:** the old activities SQL LEFT JOINs `case_lock` on `i_case`, in its count too. A case with 2+ lock rows is then counted, and paged, once per lock row. Prod's unique constraint rules that out. Without this step, load equivalence (VERIFY Part 1) could show a mismatch that cannot happen in prod.
+
+**Which row is kept:** per `i_case`, the most recent lock (`locked_at DESC`, then highest `id`). The removed rows are first copied to `wdp.p1_bak_case_lock_extra`, and deleted by primary key (`id`, `case_lock_pk`). In prod nothing references `case_lock`: no foreign key into it and no trigger on it (B1.3, B1.4).
+
+Steps:
+1. Run FINALIZE **B1.2d** first and note `extra_lock_rows`.
+2. Run this as one script. It is **not** read-only, and it ends without COMMIT:
+```sql
+BEGIN;
+SET LOCAL statement_timeout = '5min';
+SET LOCAL lock_timeout = '5s';
+
+CREATE TABLE wdp.p1_bak_case_lock_extra AS
+SELECT cl.*
+FROM wdp.case_lock cl
+JOIN (SELECT id,
+             row_number() OVER (PARTITION BY i_case ORDER BY locked_at DESC, id DESC) AS rn
+      FROM wdp.case_lock) r ON r.id = cl.id
+WHERE r.rn > 1;
+
+DELETE FROM wdp.case_lock cl
+USING wdp.p1_bak_case_lock_extra b
+WHERE cl.id = b.id;
+
+SELECT (SELECT count(*) FROM wdp.p1_bak_case_lock_extra)                                 AS rows_backed_up_and_deleted,
+       (SELECT count(*) FROM (SELECT i_case FROM wdp.case_lock GROUP BY 1 HAVING count(*) > 1) d) AS duplicates_left;
+```
+3. Check the last result:
+   - If `rows_backed_up_and_deleted` = B1.2d `extra_lock_rows` **and** `duplicates_left` = 0, run `COMMIT;`.
+   - Otherwise run `ROLLBACK;`, which undoes both the backup table and the delete, and send me the result.
+4. Build A1.6 (`case_lock_unique`) and A1.7.
+
+**Undo A0b** (only after dropping `case_lock_unique`, otherwise the insert fails):
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS wdp.case_lock_unique;
+INSERT INTO wdp.case_lock SELECT * FROM wdp.p1_bak_case_lock_extra;
+DROP TABLE wdp.p1_bak_case_lock_extra;
+```
+Once load testing is finished and the undo is no longer needed, drop the backup table: `DROP TABLE wdp.p1_bak_case_lock_extra;`.
+
 ### A1. US (`wdp`): indexes in prod, missing in load
 
 Prod names and key columns as in report §2.1–§2.3.
