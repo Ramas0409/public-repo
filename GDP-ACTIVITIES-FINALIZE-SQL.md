@@ -122,6 +122,33 @@ WHERE n.nspname IN ('wdp','nap')
 ORDER BY 1, 2, 3;
 ```
 
+### B1.2b (load only; added 2026-11-12): activity-date coverage by month
+Load is a partial, older copy of prod (load B1.1: about half of prod's rows; US unchanged since early October). This block shows which months load actually holds, so the picker date ranges can be anchored on load's last data day.
+- Both schemas are in the same load database, so **run it once**.
+- It returns counts and dates only, so the output can be saved as is: `docs/results-phase1/load/l1-load-date-coverage.txt`.
+
+**Run time class:** medium. It scans both `action` tables: US `wdp.action` is 7.7 GB and UK `nap.action` 3.0 GB in load.
+```sql
+BEGIN TRANSACTION READ ONLY;
+SET LOCAL statement_timeout = '15min';
+SET LOCAL lock_timeout = '5s';
+
+SELECT 'wdp' AS schema, date_trunc('month', d_action_processed)::date AS month,
+       count(*) AS actions, count(d_action_processed_est) AS with_est,
+       max(d_action_processed) AS max_processed, max(d_action_processed_est) AS max_est, max(z_insrt) AS max_insert
+FROM wdp.action
+WHERE d_action_processed >= DATE '2026-05-01'
+GROUP BY 1, 2
+UNION ALL
+SELECT 'nap', date_trunc('month', d_action_processed)::date,
+       count(*), NULL, max(d_action_processed), NULL, max(z_insrt)
+FROM nap.action
+WHERE d_action_processed >= DATE '2026-05-01'
+GROUP BY 1, 2
+ORDER BY 1, 2;
+```
+Then run `ROLLBACK;`.
+
 ### B1.3 Constraints (PK, unique, FK, check), including FKs from other tables that point at these
 ```sql
 BEGIN TRANSACTION READ ONLY;
