@@ -235,6 +235,32 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS uq_action_case_action_seq
     ON wdp.action (i_case, i_action_seq);   -- load: not unique (1 duplicate key, A0); prod has it as UNIQUE
 ```
 
+**If the `UNIQUE` version from A1 was already run in load** (it fails with SQL state 23505, "could not create unique index … is duplicated"):
+- A failed `CREATE INDEX CONCURRENTLY` leaves an **INVALID** index with that name behind.
+- `IF NOT EXISTS` would then skip the non-unique build with only a notice, and leave the broken index in place.
+
+Clean up first, then build, then check (load, 2026-11-12):
+```sql
+-- 1. drop the invalid leftover of the failed unique build
+DROP INDEX CONCURRENTLY IF EXISTS wdp.uq_action_case_action_seq;
+
+-- 2. build it without UNIQUE
+CREATE INDEX CONCURRENTLY IF NOT EXISTS uq_action_case_action_seq
+    ON wdp.action (i_case, i_action_seq);
+```
+```sql
+-- 3. check every A1 index: expect 7 rows, indisvalid = t, indisready = t;
+--    uq_action_case_action_seq with is_unique = f, pin_action_pkey and case_lock_unique with is_unique = t
+SELECT c.relname, i.indisvalid, i.indisready, i.indisunique AS is_unique
+FROM pg_index i JOIN pg_class c ON c.oid = i.indexrelid JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'wdp'
+  AND c.relname IN ('pin_action_pkey','uq_action_case_action_seq','ix_action_processed_actionid_case',
+                    'ix_action_status_owner_processed_actionid_case','ix_case_liability',
+                    'case_lock_unique','idx_case_lock_i_case')
+ORDER BY 1;
+```
+The same applies to any other `CREATE INDEX CONCURRENTLY` in this file that fails: run its `DROP INDEX CONCURRENTLY IF EXISTS …` (rollback statement) before retrying. V3 ("Verifying each index") lists every INVALID index in both schemas.
+
 #### A0b. Remove duplicate `wdp.case_lock` rows (load only; data change, backed up)
 **Why:** the old activities SQL LEFT JOINs `case_lock` on `i_case`, in its count too. A case with 2+ lock rows is then counted, and paged, once per lock row. Prod's unique constraint rules that out. Without this step, load equivalence (VERIFY Part 1) could show a mismatch that cannot happen in prod.
 
