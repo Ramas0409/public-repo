@@ -237,3 +237,40 @@ Do not copy `_warmup.txt` or your vars file anywhere.
 - **Then:**
   - [ ] Copy the 10 `c2-*` files (raw) and the 14 `eq2-*` files into `gdp-search/images/p1b/`.
   - [ ] Say **"results ready"**.
+
+---
+
+## 8. Variant 1 and variant 2, one round (decision of 2026-11-13 on report §7.4)
+
+**What is measured:**
+- **Variant 1 (two statements):** count unchanged; page = matches in a subquery the planner cannot merge (`OFFSET 0`), order and limit outside it.
+- **Variant 2 (one statement):** matches evaluated once (`MATERIALIZED`); the exact total and the page's rows come back together.
+- **Reused, not re-run:** old SQL (setup A, `a-*`) and the new count (setup C, `c-*-count`).
+
+**Load state needed:** the same as setup C. The 7 indexes are present and valid; no VACUUM needed.
+
+**Checked locally first** (PostgreSQL 17.10, throwaway schemas, then dropped):
+- Both variants evaluate **all** matches (hash join over every match) before `Sort → Limit` takes the page.
+- Variant 2's matches CTE can run with parallel workers (shown with parallel costs forced to 0).
+- Scripts: 0 errors, 34 files, every equivalence cell `t` for both variants.
+- DB comparison test: 368 / 368 identical for both variants, including 40 requests with total 0 and 162 with a page beyond the end.
+
+| Script (`docs/phase1b-scripts/`) | Result files in `C:\test\p1b\` |
+|---|---|
+| `p1b-us-v12.psql` | `v1-us-median-2d.txt`, `v1-us-median-60d.txt`, `v1-us-largest-2d.txt`, `v1-us-largest-60d.txt`, `v1-us-largest-60d-deep.txt`; the same 5 with `v2-`; `eq3-us-median-2d.txt`, `eq3-us-median-60d.txt`, `eq3-us-largest-2d.txt`, `eq3-us-largest-60d.txt`, `eq3-us-median-60d-max.txt`, `eq3-us-largest-60d-max.txt`, `eq3-us-largest-60d-deep.txt` |
+| `p1b-uk-v12.psql` | the same 17 names with `-uk-` |
+
+- `v1-*` = the variant 1 page statement. `v2-*` = the variant 2 single statement. Both are raw EXPLAIN (ANALYZE, BUFFERS, SETTINGS); BUFFERS includes temp read/written.
+- `eq3-*` = one row per cell. Columns: old / v1 / v2 totals; old / v1 / v2 page rows; `v2_result_rows` (1 when the page is empty); `v1_match` and `v2_match` (totals, page keys in order, md5 of every row; the v2 rows are compared without the `totalCount` column).
+- Each statement runs twice; only run 2 is saved. The UK equivalence cells take a few seconds each (old count + old page + both variants).
+
+**Run** in a fresh PSQL Tool window:
+```
+\i C:/test/p1b-us-v12.psql
+\i C:/test/p1b-uk-v12.psql
+```
+Each ends with `done: 5 v1 + 5 v2 + 7 eq3 files for us` (or `uk`).
+
+**Then:**
+- [ ] Copy the 20 `v1-*` / `v2-*` files and the 14 `eq3-*` files into `gdp-search/images/p1b/`.
+- [ ] Say **"results ready"**.
