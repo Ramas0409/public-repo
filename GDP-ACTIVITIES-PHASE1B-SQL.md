@@ -212,3 +212,28 @@ Saving the VERBOSE output as `p1b-vacuum-2.txt` is optional (no entity values in
 - [ ] any script message other than the cell names and `done:` lines.
 
 Do not copy `_warmup.txt` or your vars file anywhere.
+
+---
+
+## 7. Re-run after the F-3 page-ordering fix (2026-11-13)
+
+**Decision:** F-1 and F-2 accepted. F-3 fixed in both regions: the page keys are now ordered by `(activity date + interval '0'), action id`. That is the same order as before, but no index can supply it, so the page never uses the early-stopping date walk. Count SQL is unchanged, so the count cells from setup C are reused.
+
+**Load state needed:** the same as setup C. The 7 Stage 2 indexes are present and valid; nothing else changes. No VACUUM is needed.
+
+| Script (`docs/phase1b-scripts/`) | Result files in `C:\test\p1b\` |
+|---|---|
+| `p1b-us-c2.psql` | `c2-us-median-2d-page.txt`, `c2-us-median-60d-page.txt`, `c2-us-largest-2d-page.txt`, `c2-us-largest-60d-page.txt`, `c2-us-largest-60d-page-deep.txt` (raw) and `eq2-us-median-2d.txt`, `eq2-us-median-60d.txt`, `eq2-us-largest-2d.txt`, `eq2-us-largest-60d.txt`, `eq2-us-median-60d-max.txt`, `eq2-us-largest-60d-max.txt`, `eq2-us-largest-60d-deep.txt` |
+| `p1b-uk-c2.psql` | the same 12 names with `-uk-` |
+
+- **Run** in a fresh PSQL Tool window, the same way as before:
+  ```
+  \i C:/test/p1b-us-c2.psql
+  \i C:/test/p1b-uk-c2.psql
+  ```
+  Each ends with `done: 5 files c2-… + 7 files eq2-…`.
+- Same rules as before: each statement runs twice and only run 2 is saved. The variables at the top of each script point to `C:/test/p1b-vars.psql` and `C:/test/p1b`.
+- **Checked locally** (throwaway schemas, then dropped): 0 errors, 24 files, every equivalence row `t`.
+- **Then:**
+  - [ ] Copy the 10 `c2-*` files (raw) and the 14 `eq2-*` files into `gdp-search/images/p1b/`.
+  - [ ] Say **"results ready"**.
