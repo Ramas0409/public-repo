@@ -227,10 +227,10 @@ out AS (
 SELECT size_class, n_cases, n_values, n_ranked_consumers FROM out ORDER BY ord;
 ```
 ### 2.2 Eyes-only version: **do not save into `docs/`, do not paste back**
-- It prints `psql_vars`, two `\set` lines per class, for example `\set us_median_plat …` and `\set us_median_pred …`.
-- Copy the four `psql_vars` cells per region (two lines each, so 16 lines in total) into **one local file outside the repo**, for example `C:\temp\p1b-vars.psql`. The drivers read it with `\i`.
+- It prints `psql_vars`: **8 rows**, one `\set` line per row (`_plat` and `_pred` for each class), for example `\set us_median_plat …` and `\set us_median_pred …`.
+- Copy all 8 rows per region (16 lines in total) into **one local file outside the repo**, for example `C:\temp\p1b-vars.psql`. The drivers read it with `\i`.
 - The same variables are reused for setup C in Stage 3.
-- In pgAdmin, copy each cell with Ctrl+C. If a cell shows `[...]`, use *Save results to file* into the same local folder.
+- In pgAdmin, click the `psql_vars` column header to select all 8 rows, press Ctrl+C, and paste into your local vars file.
 
 **US:**
 ```sql
@@ -293,9 +293,10 @@ out AS (
   CROSS JOIN LATERAL (SELECT string_agg(DISTINCT quote_literal(x), ',' ORDER BY quote_literal(x)) AS platform_list
                       FROM unnest(k.platforms) x) pl
 )
-SELECT size_class, n_cases,
-       format(E'\\set us_%s_plat %s\n\\set us_%s_pred %s', size_class, quote_literal(platform_list), size_class, quote_literal(entity_predicate)) AS psql_vars
-FROM out ORDER BY ord;
+SELECT v.line AS psql_vars   -- one \set line per row: 8 rows (4 classes x plat/pred)
+FROM out CROSS JOIN LATERAL (VALUES (1, format('\set us_%s_plat %s', out.size_class, quote_literal(out.platform_list))),
+                                    (2, format('\set us_%s_pred %s', out.size_class, quote_literal(out.entity_predicate)))) AS v(k, line)
+ORDER BY out.ord, v.k;
 ```
 **UK:**
 ```sql
@@ -351,9 +352,10 @@ out AS (
             FROM cols g WHERE g.c_consumer_name = p.c_consumer_name) AS entity_predicate
   FROM picks p
 )
-SELECT size_class, n_cases,
-       format(E'\\set uk_%s_plat %s\n\\set uk_%s_pred %s', size_class, quote_literal(platform_list), size_class, quote_literal(entity_predicate)) AS psql_vars
-FROM out ORDER BY ord;
+SELECT v.line AS psql_vars   -- one \set line per row: 8 rows (4 classes x plat/pred)
+FROM out CROSS JOIN LATERAL (VALUES (1, format('\set uk_%s_plat %s', out.size_class, quote_literal(out.platform_list))),
+                                    (2, format('\set uk_%s_pred %s', out.size_class, quote_literal(out.entity_predicate)))) AS v(k, line)
+ORDER BY out.ord, v.k;
 ```
 If two classes resolve to the same consumer (possible when few consumers exist), that's fine: the cells simply repeat. The record version shows it.
 
