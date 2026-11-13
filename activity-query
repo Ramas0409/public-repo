@@ -1,0 +1,22 @@
+WITH page_keys AS MATERIALIZED (                                                                                                                                                  
+    WITH matches AS MATERIALIZED (                                                                                                                                                  
+           SELECT a.i_action_id, a.d_action_processed_est AS activity_date                                                                                                          
+           FROM wdp.action a                                                                                                                                                        
+           WHERE a.c_action_sta IN ('OPEN', 'ERROR', 'CLOSED')                                                                                                                      
+             AND a.d_action_processed_est BETWEEN :from_date AND :to_date                                                                                                           
+             AND EXISTS (SELECT 1 FROM wdp."case" c WHERE c.i_case_id = a.i_case_id                                                                                                 
+                         AND C.C_ACQ_PLATFORM IN (:platforms)                                                                                                                       
+                         AND C.c_case_sta IN ('OPEN','CLOSED')                                                                                                                      
+                         AND (C.C_LEVEL4_ENTITY IN (:chain_values) OR C.C_LEVEL5_ENTITY IN (:superchain_values)))),                                                                 
+         total AS (SELECT count(*) AS total_count FROM matches),                                                                                                                    
+         keys  AS (SELECT i_action_id, activity_date                                                                                                                                
+                   FROM matches ORDER BY activity_date, i_action_id LIMIT :page_size OFFSET :offset)                                                                                
+    SELECT t.total_count, k.i_action_id FROM total t LEFT JOIN keys k ON true)                                                                                                      
+  SELECT pk.total_count AS totalCount,                                                                                                                                              
+         C.I_CASE as caseNumber,                                                                                                                                                    
+         ... <the old path's full field list, unchanged> ...                                                                                                                        
+  FROM page_keys pk                                                                                                                                                                 
+       LEFT JOIN wdp.action a ON a.i_action_id = pk.i_action_id                                                                                                                     
+       LEFT JOIN wdp."case" c ON c.i_case_id = a.i_case_id                                                                                                                          
+       LEFT JOIN wdp.case_lock cl ON c.i_case = cl.i_case                                                                                                                           
+  ORDER BY actionProcessedESTDate, actionId ASC;       
