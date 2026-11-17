@@ -26,3 +26,27 @@ SELECT string_agg(DISTINCT format('(%L, %L)', a.i_case, a.i_action_seq), E',\n')
   To see how production actually writes the sequence, run this on each side:                                                                                                        
   SELECT i_action_seq, count(*) FROM disputes_questionnaire GROUP BY 1 ORDER BY 1;   -- US                                                                                          
   SELECT i_action_seq, count(*) FROM nap.action WHERE c_reason = '13.7' GROUP BY 1 ORDER BY 1;   -- UK 
+
+
+
+
+SELECT DISTINCT a.i_case, a.i_action_seq, a.d_action_processed,                                                                                                                   
+         format('(%L, %L),', a.i_case, a.i_action_seq) AS values_line                                                                                                               
+  FROM   nap.action a                                                                                                                                                               
+  JOIN   nap."case" c ON c.i_case = a.i_case                                                                                                                                        
+  WHERE  a.d_action_processed BETWEEN DATE '2026-10-01' AND DATE '2026-10-31'                                                                                                       
+  AND    c.c_case_ntwk = 'VISA'                                                                                                                                                     
+  AND    a.c_reason    = '13.7'                                                                                                                                                     
+  AND    ltrim(a.i_action_seq, '0') IN ('1', '2')                                                                                                                                   
+  ORDER  BY a.i_case, a.i_action_seq;                                                                                                                                               
+                                                                                                                                                                                    
+  To use it in step 2, copy the values_line column into the VALUES block and delete the comma after the last line.                                                                  
+                                                                                                                                                                                    
+  If this also returns only one row, then only one case matches the filters. Check the network value, the code format and the dates with:                                           
+                                                                                                                                                                                    
+  SELECT c.c_case_ntwk, a.c_reason, a.i_action_seq, count(*)                                                                                                                        
+  FROM   nap.action a                                                                                                                                                               
+  JOIN   nap."case" c ON c.i_case = a.i_case                                                                                                                                        
+  WHERE  a.d_action_processed BETWEEN DATE '2026-10-01' AND DATE '2026-10-31'                                                                                                       
+  GROUP  BY 1, 2, 3                                                                                                                                                                 
+  ORDER  BY 4 DESC;      
