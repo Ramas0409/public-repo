@@ -1,0 +1,28 @@
+SELECT string_agg(DISTINCT format('(%L, %L)', a.i_case, a.i_action_seq), E',\n') AS values_list                                                                                   
+  FROM   nap.action a                                                                                                                                                               
+  JOIN   nap."case" c ON c.i_case = a.i_case                                                                                                                                        
+  WHERE  a.d_action_processed BETWEEN DATE '2026-10-01' AND DATE '2026-10-31'                                                                                                       
+  AND    c.c_case_ntwk = 'VISA'                                                                                                                                                     
+  AND    a.c_reason    = '13.7'                                                                                                                                                     
+  AND    ltrim(a.i_action_seq, '0') IN ('1', '2');  
+
+
+
+ WITH nap_137 (i_case, i_action_seq) AS (                                                                                                                                          
+      VALUES                                                                                                                                                                        
+      ('1234567', '01'),                                                                                                                                                            
+      ('1234999', '02')          -- paste step 1's output here                                                                                                                      
+  )                                                                                                                                                                                 
+  SELECT q.i_case, q.i_action_seq, q.c_case_stage,                                                                                                                                  
+         q.n_document_name, q.z_insrt, q.z_updt                                                                                                                                     
+  FROM   disputes_questionnaire q                                                                                                                                                   
+  JOIN   nap_137 n ON n.i_case = q.i_case                                                                                                                                           
+                 AND ltrim(n.i_action_seq, '0') = ltrim(q.i_action_seq, '0')                                                                                                        
+  WHERE  ltrim(q.i_action_seq, '0') IN ('1', '2')                                                                                                                                   
+  ORDER  BY q.i_case, q.i_action_seq;                                                                                                                                               
+                                                                                                                                                                                    
+  The join also compares the sequences with leading zeros stripped. That way a '1' in one database still matches a '01' in the other.                                               
+                                                                                                                                                                                    
+  To see how production actually writes the sequence, run this on each side:                                                                                                        
+  SELECT i_action_seq, count(*) FROM disputes_questionnaire GROUP BY 1 ORDER BY 1;   -- US                                                                                          
+  SELECT i_action_seq, count(*) FROM nap.action WHERE c_reason = '13.7' GROUP BY 1 ORDER BY 1;   -- UK 
