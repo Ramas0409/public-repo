@@ -1,0 +1,7 @@
+SELECT count(*)                         AS total_rows,
+       count(idempotency_id)            AS rows_with_id,
+       count(DISTINCT idempotency_id)   AS distinct_ids,
+       max(length(idempotency_id))      AS longest_id,
+       sum(CASE WHEN idempotency_id !~ '^[A-Za-z0-9._:-]{1,64}$' THEN 1 ELSE 0 END) AS not_safe_to_send
+FROM wdp.ai_response_events
+WHERE status <> 'TRACKER';
