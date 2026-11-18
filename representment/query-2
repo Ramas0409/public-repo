@@ -1,0 +1,9 @@
+SELECT CASE WHEN idempotency_id IS NULL THEN 'no id'
+            WHEN count(*) OVER (PARTITION BY idempotency_id) > 1 THEN 'shared id'
+            ELSE 'own id' END AS id_group,
+       kind, status, count(*) AS row_count,
+       min(created_at) AS first_created, max(created_at) AS last_created
+FROM wdp.ai_response_events
+WHERE status <> 'TRACKER'
+GROUP BY 1, kind, status
+ORDER BY 1, kind, status;
