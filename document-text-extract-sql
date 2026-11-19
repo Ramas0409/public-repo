@@ -1,0 +1,12 @@
+SELECT row_to_json(t)
+FROM (
+  SELECT cd.dispute_case_id, cd.document_ref, cd.declared_side, dt.*
+  FROM wdp_ai.case_document cd
+  JOIN wdp_ai.document_text dt ON dt.case_document_id = cd.id
+  WHERE cd.dispute_case_id IN ('N232D3470118', 'N252A3543865' /* ...the rest */)
+  ORDER BY cd.dispute_case_id, cd.document_ref
+) t;
+
+
+
+psql -h <host> -d <db> -U <user> -At -f query.sql > document_text.jsonl
