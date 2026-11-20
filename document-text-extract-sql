@@ -39,3 +39,13 @@ SELECT case_number, id, created_at, decision, lead_code
 FROM wdp_ai.classifier_run
 WHERE case_number IN ('N475M4118187','N483T1471700','N678Y4778864','N876S3736295')
 ORDER BY case_number, created_at;
+
+
+
+SELECT r.code, r.role, tl.conditions
+FROM wdp_ai.requirement r
+JOIN wdp_ai.reason_code rc ON rc.id = r.reason_code_id
+LEFT JOIN wdp_ai.requirement_time_limit tl ON tl.requirement_id = r.id
+WHERE rc.code = '13.1'
+  AND (r.code LIKE '%G34' OR r.code LIKE '%G32' OR r.code LIKE '%G33'
+       OR r.code LIKE '%G28' OR r.code LIKE '%G42');
