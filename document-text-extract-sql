@@ -22,3 +22,20 @@ WHERE cr.case_number IN (
   'N976I3869042'
 )
 ORDER BY cr.case_number, cr.created_at;
+
+
+
+SELECT ef.dispute_case_id,
+       ef.reader_version      AS fact_reader,
+       max(dt.reader_version) AS doc_reader,
+       ef.reader_version = max(dt.reader_version) AS same
+FROM wdp_ai.extracted_fact ef
+JOIN wdp_ai.document_text dt ON dt.case_document_id = ef.case_document_id
+WHERE ef.dispute_case_id IN ('N475M4118187','N483T1471700','N678Y4778864','N876S3736295')
+GROUP BY ef.dispute_case_id, ef.reader_version;
+
+
+SELECT case_number, id, created_at, decision, lead_code
+FROM wdp_ai.classifier_run
+WHERE case_number IN ('N475M4118187','N483T1471700','N678Y4778864','N876S3736295')
+ORDER BY case_number, created_at;
