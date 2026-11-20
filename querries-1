@@ -10,3 +10,13 @@ FROM wdp_ai.model_call_usage
 WHERE created_at >= '2026-11-13' AND created_at < '2026-11-14'
 GROUP BY 1, 2, 3
 ORDER BY 1, 2, 3;
+
+
+
+SELECT id, case_number, created_at, lead_code,
+       jsonb_array_length(run_record::jsonb->'request'->'documents') AS docs,
+       (SELECT count(*)
+        FROM jsonb_array_elements(run_record::jsonb->'request'->'documents') d
+        WHERE d->>'side' = 'ISSUER') AS issuer_docs
+FROM wdp_ai.classifier_run
+WHERE id IN (236, 408, 243, 420);
