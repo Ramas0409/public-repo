@@ -10,3 +10,15 @@ FROM (
 
 
 psql -h <host> -d <db> -U <user> -At -f query.sql > document_text.jsonl
+
+
+SELECT to_jsonb(cr) - 'ops_letter' - 'network_letter' - 'prompt_snapshot'
+FROM wdp_ai.classifier_run cr
+WHERE cr.case_number IN (
+  'N232D3470118','N252A3543865','N268X1574364','N322A3646743','N334H3655997',
+  'N450N3519993','N475M4118187','N483T1471700','N487A3543871','N4997D931860',
+  'N595A3453892','N608B1727377','N610W3451447','N678Y4778864','N714P3488468',
+  'N727V1458827','N764S3560077','N832B3710574','N876S3736295','N925V4234714',
+  'N976I3869042'
+)
+ORDER BY cr.case_number, cr.created_at;
